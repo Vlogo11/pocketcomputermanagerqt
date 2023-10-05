@@ -7,7 +7,7 @@ MyOS::MyOS(QWidget *parent)
 {
     ui->setupUi(this);
     diskSpace(); specs(); graph(); fileExplorer(); settings(); taskManager();
-    setFixedSize(410, 360);
+    setFixedSize(500, 351);
     QIcon appIcon(QCoreApplication::applicationDirPath() + "/Images/icon.png"); setWindowIcon(appIcon);
     setWindowTitle("Pocket Computer Manager");
 }
@@ -19,10 +19,8 @@ void MyOS::diskSpace() {
     if (!GetDiskFreeSpaceEx(NULL, &free_size, &total_size, &used_size)) {}
     used_size.QuadPart = total_size.QuadPart - free_size.QuadPart;
     int used_percent = (int)((double)used_size.QuadPart / (double)total_size.QuadPart * 100);
-    QString round_free = QString::number((double) free_size.QuadPart / 1073741824, 'f', 2);
     QString round_used = QString::number((double) used_size.QuadPart / 1073741824, 'f', 2);
     qint64 images_size = 0, downloads_size = 0, docs_size = 0;
-    ui->label_3->setText(round_free + " GB");
     ui->images_circle->setStyleSheet("QLabel {""background-color: green;""border-radius: 3px;""}");
     ui->downloads_circle->setStyleSheet("QLabel {""background-color: red;""border-radius: 3px;""}");
     ui->docs_circle->setStyleSheet("QLabel {background-color: #6495ED; border-radius: 3px;}");
@@ -45,48 +43,42 @@ void MyOS::diskSpace() {
             ui->clearTrashButton->setIcon(binIcon); ui->clearTrashButton->setIconSize(ui->clearTrashButton->size());
         });
     });
+
+    QString perfText = QString("<table><td width=\"50%\" align=\"left\">Performance</td><td width=\"50%\" align=\"right\">100%</td></table>");
+    QString condText = QString("<table><td width=\"50%\" align=\"left\">Condition</td><td width=\"50%\" align=\"right\">100%</td></table>");
+    QString dataText = QString("<table><td width=\"50%\" align=\"left\">Data Written</td><td width=\"50%\" align=\"right\">X TB</td></table>");
+    ui->storage_9->setText(perfText); ui->storage_10->setText(condText); ui->storage_13->setText(dataText);
+
     QDirIterator it(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation), QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories);
     while (it.hasNext()) {images_size += QFileInfo(it.next()).size();}
     if (images_size < 1073741824) {ui->storage_6->setText(QString::number(images_size / 1024.0 / 1024.0, 'f', 1) + " MB");}
     else {ui->storage_6->setText(QString::number(images_size / 1024.0 / 1024.0 / 1024.0, 'f', 2) + " GB");}
-    ui->lineEdit_2->setText(it.path());
 
     QDirIterator it1(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation), QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories);
     while (it1.hasNext()) {downloads_size += QFileInfo(it1.next()).size();}
     if (downloads_size < 1073741824) {ui->storage_7->setText(QString::number(downloads_size / 1024.0 / 1024.0, 'f', 1) + " MB");}
     else {ui->storage_7->setText(QString::number(downloads_size / 1024.0 / 1024.0 / 1024.0, 'f', 2) + " GB");}
-    ui->lineEdit_5->setText(it1.path());
 
     QDirIterator it2(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories);
     while (it2.hasNext()) {docs_size += QFileInfo(it2.next()).size();}
     if (docs_size < 1073741824) {ui->label_6->setText(QString::number(docs_size / 1024.0 / 1024.0, 'f', 1) + " MB");}
     else {ui->label_6->setText(QString::number(docs_size / 1024.0 / 1024.0 / 1024.0, 'f', 2) + " GB");}
-    ui->lineEdit_4->setText(it2.path());
+    ui->lineEdit_2->setText(it.path()); ui->lineEdit_5->setText(it1.path()); ui->lineEdit_4->setText(it2.path());
 
-    qint64 totalSizeQint = (static_cast<qint64>(total_size.u.HighPart) << 32) | total_size.u.LowPart;
-    float images_percent = static_cast<float>(images_size) / static_cast<float>(totalSizeQint);
-    float docs_percent = (static_cast<float>(docs_size) / static_cast<float>(totalSizeQint));
-    float downloads_percent = (static_cast<float>(downloads_size) / static_cast<float>(totalSizeQint));
     float others = static_cast<float>(static_cast<qint64>(used_size.QuadPart) - downloads_size - images_size - docs_size);
-    float others_percent = static_cast<float>(others) / static_cast<float>(totalSizeQint);
-    if (used_percent >= 90) {ui->bar->setFormat(round_used + " GB - " + QString::number(used_percent) + "% Used - Not enough space!");}
-    else {ui->bar->setFormat(round_used + " GB - " + QString::number(used_percent) + "% Used");}
-    QString progressStyle = QString("::chunk {"
-                                    "background-color: qlineargradient(x0:0, x2:1, "
-                                    "stop: 0 green, stop: %1 green, "
-                                    "stop: %2 #6495ED, stop: %3 #6495ED, "
-                                    "stop: %4 red, stop: %5 red, "
-                                    "stop: %6 orange, stop: %7 orange, "
-                                    "stop: %8 transparent, stop: 1 transparent"")}")
-                                .arg(QString::number(qMax(0.0001, images_percent)))
-                                .arg(QString::number(qMax(0.0001, images_percent + 0.0001)))
-                                .arg(QString::number(qMax(0.0001, images_percent + docs_percent)))
-                                .arg(QString::number(qMax(0.0001, images_percent + docs_percent + 0.0001)))
-                                .arg(QString::number(qMax(0.0001, images_percent + docs_percent + downloads_percent)))
-                                .arg(QString::number(qMax(0.0001, images_percent + docs_percent + downloads_percent + 0.0001)))
-                                .arg(QString::number(qMax(0.0001, images_percent + docs_percent + downloads_percent + others_percent)))
-                                .arg(QString::number(qMax(0.0001, images_percent + docs_percent + downloads_percent + others_percent + 0.0001)));
-    ui->bar->setStyleSheet(progressStyle);
+    ui->usedSize->setText(QString::number(used_percent) + "%"); ui->label->setText(round_used + " GB");
+    QPieSeries *series = new QPieSeries(); series->setHoleSize(0.75); series->setPieSize(1.0);
+    QPieSlice *imagesSlice = series->append("Images", images_size); imagesSlice->setColor(QColor("#008000"));  imagesSlice->setBorderColor(QColor("#008000"));
+    QPieSlice *docsSlice = series->append("Docs", docs_size); docsSlice->setColor(QColor("#6495ED"));  docsSlice->setBorderColor(QColor("#6495ED"));
+    QPieSlice *downloadsSlice = series->append("Downloads", downloads_size); downloadsSlice->setColor(QColor("#FF0000"));  downloadsSlice->setBorderColor(QColor("#FF0000"));
+    QPieSlice *othersSlice = series->append("Others", others); othersSlice->setColor(QColor("#FFA500")); othersSlice->setBorderColor(QColor("#FFA500"));
+    qint64 totalSizeQint = (static_cast<qint64>(total_size.u.HighPart) << 32) | total_size.u.LowPart;
+    qint64 usedSizeQint = (static_cast<qint64>(used_size.u.HighPart) << 32) | used_size.u.LowPart;
+    float remainingSize = static_cast<float>(totalSizeQint - usedSizeQint);
+    QPieSlice *remainingSlice = series->append("Remaining", remainingSize); remainingSlice->setColor(Qt::white); series->append(remainingSlice);
+    QChart *chart = new QChart(); chart->addSeries(series); chart->setTitle(""); chart->legend()->hide(); chart->setBackgroundBrush(QColor(0, 0, 0, 0));
+    QChartView *chartView = new QChartView(chart, ui->circleBar_2); chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setGeometry(0, 0, ui->circleBar_2->width(), ui->circleBar_2->height()); chartView->setParent(ui->circleBar_2);
 
     QString os_drive = QCoreApplication::applicationFilePath().left(1);
     for (const QStorageInfo& storage : QStorageInfo::mountedVolumes()) {
@@ -103,8 +95,9 @@ void MyOS::diskSpace() {
                 for (const QStorageInfo& storage : QStorageInfo::mountedVolumes()) {
                     if (storage.isValid() && storage.isReady() && !storage.isReadOnly()) {
                         if (storage.rootPath().left(1) == name) {
-                            QString freeCapacity = QString::number(storage.bytesAvailable() / (1024 * 1024 * 1024.0), 'f', 2) + " GB";
-                            ui->label_3->setText(freeCapacity);
+                            QString usedCapacity = QString::number((storage.bytesTotal() - storage.bytesAvailable()) / (1024 * 1024 * 1024.0), 'f', 2) + " GB";
+                            QString usedAvgPercent = QString::number((storage.bytesTotal() - storage.bytesAvailable()) / storage.bytesTotal() * 100);
+                            ui->label->setText(usedCapacity); ui->usedSize->setText(usedAvgPercent + "%");
                         }
                     }
                 }
@@ -141,9 +134,7 @@ void MyOS::specs() {
             ui->label_12->setText(cpuInfo);
         }
     }
-    MEMORYSTATUSEX status;
-    status.dwLength = sizeof(status);
-    GlobalMemoryStatusEx(&status);
+    MEMORYSTATUSEX status; status.dwLength = sizeof(status); GlobalMemoryStatusEx(&status);
     unsigned long long installedRAM = status.ullTotalPhys;
     double installedRAMinGB = installedRAM / (1024.0 * 1024.0 * 1024.0);
     int installedRAMint = qRound(installedRAMinGB);
@@ -161,9 +152,7 @@ void MyOS::graph() {
     connect(timer, &QTimer::timeout, this, [series, &i, &isRAMUsage, label]() {
         if (i < 61) {
             if (isRAMUsage == true) {
-                MEMORYSTATUSEX status;
-                status.dwLength = sizeof(status);
-                GlobalMemoryStatusEx(&status);
+                MEMORYSTATUSEX status; status.dwLength = sizeof(status); GlobalMemoryStatusEx(&status);
                 unsigned long long totalRAM = status.ullTotalPhys; unsigned long long usedRAM = totalRAM - status.ullAvailPhys;
                 double usedRAMPercent = (static_cast<double>(usedRAM) / totalRAM) * 100.0; double usedRAMinGB = usedRAM / (1024.0 * 1024.0 * 1024.0);
                 label->setText(QString("RAM usage in the past minute (Current: %1% - %2 GB)").arg(usedRAMPercent, 0, 'f', 2).arg(usedRAMinGB, 0, 'f', 2));
@@ -175,14 +164,9 @@ void MyOS::graph() {
     chart->addSeries(series); chart->createDefaultAxes();
     chart->axes(Qt::Horizontal).at(0)->setRange(0, 60); chart->axes(Qt::Vertical).at(0)->setRange(0, 100);
     chart->axes(Qt::Horizontal).at(0)->setLabelsVisible(false); chart->axes(Qt::Vertical).at(0)->setLabelsVisible(false);
-    chart->legend()->hide();
-    chart->setBackgroundBrush(QColor(0, 0, 0, 0));
-    chart->setMargins(QMargins(-4, -7, -3, -5));
-    QChartView *chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    QVBoxLayout *layout = new QVBoxLayout(ui->usage);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(3);
+    chart->legend()->hide(); chart->setBackgroundBrush(QColor(0, 0, 0, 0)); chart->setMargins(QMargins(-4, -7, -3, -5));
+    QChartView *chartView = new QChartView(chart); chartView->setRenderHint(QPainter::Antialiasing);
+    QVBoxLayout *layout = new QVBoxLayout(ui->usage); layout->setContentsMargins(0, 0, 0, 0); layout->setSpacing(3);
     QHBoxLayout *buttonsLayout = new QHBoxLayout();
     QPushButton *cpuButton = new QPushButton("CPU"); QPushButton *gpuButton = new QPushButton("GPU"); QPushButton *ramButton = new QPushButton("RAM");
     buttonsLayout->setContentsMargins(5, 7, 5, 0);
@@ -200,7 +184,7 @@ void MyOS::graph() {
 void MyOS::fileExplorer() {
     ui->treeView->setStyleSheet("QTreeView#treeView { border: 0px solid black; background-color: transparent;}");
     QFileSystemModel* model = new QFileSystemModel; model->setRootPath(QDir::currentPath()); ui->treeView->setModel(model);
-    ui->treeView->header()->resizeSection(0, 290); ui->treeView->header()->resizeSection(1, 70);
+    ui->treeView->header()->resizeSection(0, 250); ui->treeView->header()->resizeSection(1, 70);
     ui->treeView->setColumnHidden(2, true); ui->treeView->setColumnHidden(3, true);
     ui->treeView->setRootIsDecorated(false);
     connect(ui->treeView, &QTreeView::doubleClicked, this, [=](const QModelIndex& index) {
@@ -244,12 +228,10 @@ void MyOS::fileExplorer() {
         connect(closeButton, &QPushButton::clicked, this, [=]() mutable {
             int tabIndex = ui->tabWidget->indexOf(newTab);
             ui->tabWidget->removeTab(tabIndex); i--;
-            QPoint addButtonPos = ui->addButton->pos();
-            ui->addButton->move(addButtonPos.x() - 102, addButtonPos.y());
+            QPoint addButtonPos = ui->addButton->pos(); ui->addButton->move(addButtonPos.x() - 102, addButtonPos.y());
         });
         ui->tabWidget->setCurrentIndex(i + 1);
-        QPoint addButtonPos = ui->addButton->pos();
-        ui->addButton->move(addButtonPos.x() + 102, addButtonPos.y());
+        QPoint addButtonPos = ui->addButton->pos(); ui->addButton->move(addButtonPos.x() + 102, addButtonPos.y());
     });
     connect(deleteAction, &QAction::triggered, this, [=]() {
         QModelIndex index = ui->treeView->currentIndex();
@@ -298,8 +280,7 @@ void MyOS::fileExplorer() {
             searchFiles(QDir(model->rootPath()));
             QMetaObject::invokeMethod(this, [=]() {
                 QString countText = tr("%1 results for \"%2\"").arg(results.size()).arg(searchTerm);
-                QStandardItem* rootItem = searchModel->invisibleRootItem();
-                QStandardItem* countItem = new QStandardItem(countText);
+                QStandardItem* rootItem = searchModel->invisibleRootItem(); QStandardItem* countItem = new QStandardItem(countText);
                 countItem->setSelectable(false);
                 rootItem->appendRow(countItem);
                 for (const QString& result : results) {
@@ -313,14 +294,11 @@ void MyOS::fileExplorer() {
                     }
                     QStandardItem* sizeItem = new QStandardItem(size); QStandardItem* nameItem = new QStandardItem(name);
                     nameItem->setData(result, Qt::UserRole); nameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled); nameItem->setToolTip(result);
-                    QList<QStandardItem*> rowItems; rowItems << nameItem << sizeItem;
-                    rootItem->appendRow(rowItems);
+                    QList<QStandardItem*> rowItems; rowItems << nameItem << sizeItem; rootItem->appendRow(rowItems);
                 }
-                ui->treeView->setModel(searchModel);
-                ui->treeView->header()->resizeSection(0, 320); ui->treeView->header()->resizeSection(1, 40);
-                QTime endTime = QTime::currentTime();
-                int elapsedTime = startTime.secsTo(endTime); int hours = elapsedTime / 3600;
-                int minutes = (elapsedTime % 3600) / 60; int seconds = elapsedTime % 60;
+                ui->treeView->setModel(searchModel); ui->treeView->header()->resizeSection(0, 320); ui->treeView->header()->resizeSection(1, 40);
+                QTime endTime = QTime::currentTime(); int elapsedTime = startTime.secsTo(endTime);
+                int hours = elapsedTime / 3600; int minutes = (elapsedTime % 3600) / 60; int seconds = elapsedTime % 60;
                 QString elapsedTimeString = QString("%1:%2:%3").arg(hours, 2, 10, QChar('0')).arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0'));
                 countItem->setText(countText + " (Elapsed Time: " + elapsedTimeString + ")");
             });
@@ -328,9 +306,7 @@ void MyOS::fileExplorer() {
     });
     connect(ui->pushButton, &QPushButton::clicked, this, [=]() {
         if (searchModel->rowCount() > 0) {
-            ui->treeView->setModel(model);
-            ui->treeView->setRootIndex(QModelIndex());
-            ui->treeView->setColumnHidden(2, true); ui->treeView->setColumnHidden(3, true);
+            ui->treeView->setModel(model); ui->treeView->setRootIndex(QModelIndex()); ui->treeView->setColumnHidden(2, true); ui->treeView->setColumnHidden(3, true);
             QString newPath = model->rootPath();
             ui->usernameLineEdit_2->setText(newPath); model->setRootPath(newPath);
         } else {
@@ -356,7 +332,7 @@ void MyOS::taskManager() {
         ui->taskManager->setHorizontalHeaderLabels({"Program's Name", "Memory Usage"});
         ui->taskManager->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
         ui->taskManager->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
-        ui->taskManager->horizontalHeader()->resizeSection(0, 250); ui->taskManager->horizontalHeader()->resizeSection(1, 140);
+        ui->taskManager->horizontalHeader()->resizeSection(0, 340); ui->taskManager->horizontalHeader()->resizeSection(1, 140);
         ui->taskManager->verticalHeader()->setVisible(false);
         ui->taskManager->setStyleSheet("QTableWidget { border: none; background-color: transparent; } QTableWidget::item { border: none; background-color: transparent; }");
         QStringList uniquePrograms;
