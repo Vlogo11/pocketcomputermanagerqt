@@ -7,7 +7,7 @@ MyOS::MyOS(QWidget *parent)
 {
     ui->setupUi(this);
     diskSpace(); specs(); graph(); fileExplorer(); settings(); taskManager();
-    setFixedSize(500, 351);
+    setFixedSize(525, 390);
     QIcon appIcon(QCoreApplication::applicationDirPath() + "/Images/icon.png"); setWindowIcon(appIcon);
     setWindowTitle("Pocket Computer Manager");
 }
@@ -21,9 +21,6 @@ void MyOS::diskSpace() {
     int used_percent = (int)((double)used_size.QuadPart / (double)total_size.QuadPart * 100);
     QString round_used = QString::number((double) used_size.QuadPart / 1073741824, 'f', 2);
     qint64 images_size = 0, downloads_size = 0, docs_size = 0;
-    ui->images_circle->setStyleSheet("QLabel {""background-color: green;""border-radius: 3px;""}");
-    ui->downloads_circle->setStyleSheet("QLabel {""background-color: red;""border-radius: 3px;""}");
-    ui->docs_circle->setStyleSheet("QLabel {background-color: #6495ED; border-radius: 3px;}");
     ui->diskInfo->setStyleSheet("QFrame#diskInfo {border: 1px solid black;}");
     QIcon cpuicon(QCoreApplication::applicationDirPath() + "/Images/cpu.png");
     ui->label_13->setPixmap(cpuicon.pixmap(ui->label_13->size(), QIcon::Normal, QIcon::On));
@@ -64,6 +61,21 @@ void MyOS::diskSpace() {
     if (docs_size < 1073741824) {ui->label_6->setText(QString::number(docs_size / 1024.0 / 1024.0, 'f', 1) + " MB");}
     else {ui->label_6->setText(QString::number(docs_size / 1024.0 / 1024.0 / 1024.0, 'f', 2) + " GB");}
     ui->lineEdit_2->setText(it.path()); ui->lineEdit_5->setText(it1.path()); ui->lineEdit_4->setText(it2.path());
+
+    QHBoxLayout* layout = new QHBoxLayout( this ); layout->addWidget(ui->storage_2); layout->addWidget(ui->storage_6);
+    layout->setContentsMargins(5,0,5,0);
+    ui->storage_2->setStyleSheet("color: #008F00;}");
+    ui->pushButton_2->setLayout(layout);
+
+    QHBoxLayout* layout2 = new QHBoxLayout( this ); layout2->addWidget(ui->storage_4); layout2->addWidget(ui->label_6);
+    layout2->setContentsMargins(5,0,5,0);
+    ui->storage_4->setStyleSheet("color: #6495ED;}");
+    ui->pushButton_3->setLayout(layout2);
+
+    QHBoxLayout* layout3 = new QHBoxLayout( this ); layout3->addWidget(ui->storage_3); layout3->addWidget(ui->storage_7);
+    layout3->setContentsMargins(5,0,5,0);
+    ui->storage_3->setStyleSheet("color: red;}");
+    ui->pushButton_4->setLayout(layout3);
 
     float others = static_cast<float>(static_cast<qint64>(used_size.QuadPart) - downloads_size - images_size - docs_size);
     ui->usedSize->setText(QString::number(used_percent) + "%"); ui->label->setText(round_used + " GB");
@@ -296,7 +308,7 @@ void MyOS::fileExplorer() {
                     nameItem->setData(result, Qt::UserRole); nameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled); nameItem->setToolTip(result);
                     QList<QStandardItem*> rowItems; rowItems << nameItem << sizeItem; rootItem->appendRow(rowItems);
                 }
-                ui->treeView->setModel(searchModel); ui->treeView->header()->resizeSection(0, 320); ui->treeView->header()->resizeSection(1, 40);
+                ui->treeView->setModel(searchModel); ui->treeView->header()->resizeSection(0, 280); ui->treeView->header()->resizeSection(1, 60);
                 QTime endTime = QTime::currentTime(); int elapsedTime = startTime.secsTo(endTime);
                 int hours = elapsedTime / 3600; int minutes = (elapsedTime % 3600) / 60; int seconds = elapsedTime % 60;
                 QString elapsedTimeString = QString("%1:%2:%3").arg(hours, 2, 10, QChar('0')).arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0'));
@@ -332,7 +344,7 @@ void MyOS::taskManager() {
         ui->taskManager->setHorizontalHeaderLabels({"Program's Name", "Memory Usage"});
         ui->taskManager->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
         ui->taskManager->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
-        ui->taskManager->horizontalHeader()->resizeSection(0, 340); ui->taskManager->horizontalHeader()->resizeSection(1, 140);
+        ui->taskManager->horizontalHeader()->resizeSection(0, 350); ui->taskManager->horizontalHeader()->resizeSection(1, 160);
         ui->taskManager->verticalHeader()->setVisible(false);
         ui->taskManager->setStyleSheet("QTableWidget { border: none; background-color: transparent; } QTableWidget::item { border: none; background-color: transparent; }");
         QStringList uniquePrograms;
