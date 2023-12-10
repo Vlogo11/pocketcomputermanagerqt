@@ -9,14 +9,11 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MyOS; }
 QT_END_NAMESPACE
 
-class MyOS : public QMainWindow
-{
+class MyOS : public QMainWindow {
     Q_OBJECT
-
     public:
         MyOS(QWidget *parent = nullptr);
         ~MyOS();
-
     private slots:
         void diskSpace();
         void specs();
@@ -24,10 +21,21 @@ class MyOS : public QMainWindow
         void fileExplorer();
         void settings();
         void taskManager();
-
     private:
         Ui::MyOS *ui;
-        QString getGraphicsCardType() {
+        float cpuLoad() {
+            FILETIME idleTime, kernelTime, userTime;
+            if (GetSystemTimes(&idleTime, &kernelTime, &userTime)) {}
+            ULARGE_INTEGER lastIdleTime, lastKernelTime, lastUserTime;
+            static ULARGE_INTEGER prevIdleTime, prevKernelTime, prevUserTime;
+            lastIdleTime.LowPart = idleTime.dwLowDateTime; lastIdleTime.HighPart = idleTime.dwHighDateTime; lastKernelTime.LowPart = kernelTime.dwLowDateTime;
+            lastKernelTime.HighPart = kernelTime.dwHighDateTime; lastUserTime.LowPart = userTime.dwLowDateTime; lastUserTime.HighPart = userTime.dwHighDateTime;
+            float idleTimeDiff = (lastIdleTime.QuadPart - prevIdleTime.QuadPart), kernelTimeDiff = (lastKernelTime.QuadPart - prevKernelTime.QuadPart);
+            float userTimeDiff = (lastUserTime.QuadPart - prevUserTime.QuadPart), totalTimeDiff = kernelTimeDiff + userTimeDiff, load = 100 * (totalTimeDiff - idleTimeDiff) / totalTimeDiff;
+            prevIdleTime = lastIdleTime; prevKernelTime = lastKernelTime; prevUserTime = lastUserTime;
+            return load;
+        }
+        QString gpuType() {
             IDXGIFactory4* pFactory = nullptr; IDXGIAdapter1* pAdapter = nullptr;
             QString gpuDescription;
             int count = 0;
@@ -51,8 +59,7 @@ class MyOS : public QMainWindow
                         if (videoMemoryInMB % 1024 >= 500) {videoMemoryInGB = qCeil(videoMemoryInGB);}
                         else {videoMemoryInGB = qFloor(videoMemoryInGB);}
                         gpuDescription.append(QString(" %1 GB").arg(videoMemoryInGB, 0, 'f', videoMemoryInMB % 1024 >= 512 ? 0 : 1));
-                    }
-                    else {gpuDescription.append(QString(" %1 MB").arg(videoMemoryInMB));}
+                    } else {gpuDescription.append(QString(" %1 MB").arg(videoMemoryInMB));}
                 }
             } return gpuDescription;
         }

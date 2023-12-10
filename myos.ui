@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1045</width>
+    <width>1075</width>
     <height>800</height>
    </rect>
   </property>
@@ -28,8 +28,8 @@
      <rect>
       <x>5</x>
       <y>5</y>
-      <width>515</width>
-      <height>358</height>
+      <width>530</width>
+      <height>363</height>
      </rect>
     </property>
     <property name="font">
@@ -56,8 +56,8 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>173</y>
-       <width>145</width>
+       <y>183</y>
+       <width>151</width>
        <height>20</height>
       </rect>
      </property>
@@ -81,9 +81,9 @@
     <widget class="QComboBox" name="otherDisks">
      <property name="geometry">
       <rect>
-       <x>5</x>
-       <y>5</y>
-       <width>143</width>
+       <x>6</x>
+       <y>6</y>
+       <width>149</width>
        <height>18</height>
       </rect>
      </property>
@@ -95,8 +95,8 @@
      <property name="geometry">
       <rect>
        <x>3</x>
-       <y>303</y>
-       <width>145</width>
+       <y>307</y>
+       <width>155</width>
        <height>20</height>
       </rect>
      </property>
@@ -111,8 +111,8 @@
      <property name="geometry">
       <rect>
        <x>3</x>
-       <y>320</y>
-       <width>145</width>
+       <y>324</y>
+       <width>155</width>
        <height>20</height>
       </rect>
      </property>
@@ -126,10 +126,10 @@
     <widget class="QTabWidget" name="tabWidget">
      <property name="geometry">
       <rect>
-       <x>152</x>
-       <y>5</y>
-       <width>360</width>
-       <height>349</height>
+       <x>160</x>
+       <y>6</y>
+       <width>365</width>
+       <height>352</height>
       </rect>
      </property>
      <property name="font">
@@ -156,8 +156,8 @@
       <widget class="QPushButton" name="pushButton">
        <property name="geometry">
         <rect>
-         <x>3</x>
-         <y>4</y>
+         <x>4</x>
+         <y>5</y>
          <width>18</width>
          <height>18</height>
         </rect>
@@ -169,8 +169,8 @@
       <widget class="QLineEdit" name="usernameLineEdit_2">
        <property name="geometry">
         <rect>
-         <x>25</x>
-         <y>4</y>
+         <x>27</x>
+         <y>5</y>
          <width>210</width>
          <height>18</height>
         </rect>
@@ -182,9 +182,9 @@
       <widget class="QLineEdit" name="usernameLineEdit_3">
        <property name="geometry">
         <rect>
-         <x>239</x>
-         <y>4</y>
-         <width>113</width>
+         <x>242</x>
+         <y>5</y>
+         <width>114</width>
          <height>18</height>
         </rect>
        </property>
@@ -198,9 +198,9 @@
       <widget class="QTreeView" name="treeView">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>23</y>
-         <width>352</width>
+         <x>1</x>
+         <y>25</y>
+         <width>355</width>
          <height>300</height>
         </rect>
        </property>
@@ -211,6 +211,9 @@
        </property>
        <property name="focusPolicy">
         <enum>Qt::ClickFocus</enum>
+       </property>
+       <property name="acceptDrops">
+        <bool>true</bool>
        </property>
        <property name="lineWidth">
         <number>0</number>
@@ -223,6 +226,21 @@
        </property>
        <property name="autoScrollMargin">
         <number>10</number>
+       </property>
+       <property name="tabKeyNavigation">
+        <bool>true</bool>
+       </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="dragDropOverwriteMode">
+        <bool>true</bool>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragDrop</enum>
+       </property>
+       <property name="defaultDropAction">
+        <enum>Qt::TargetMoveAction</enum>
        </property>
        <property name="selectionMode">
         <enum>QAbstractItemView::SingleSelection</enum>
@@ -257,8 +275,8 @@
     <widget class="QPushButton" name="addButton">
      <property name="geometry">
       <rect>
-       <x>253</x>
-       <y>7</y>
+       <x>261</x>
+       <y>8</y>
        <width>16</width>
        <height>16</height>
       </rect>
@@ -271,8 +289,8 @@
      <property name="geometry">
       <rect>
        <x>3</x>
-       <y>337</y>
-       <width>145</width>
+       <y>341</y>
+       <width>155</width>
        <height>20</height>
       </rect>
      </property>
@@ -286,10 +304,10 @@
     <widget class="QFrame" name="circleBar">
      <property name="geometry">
       <rect>
-       <x>1</x>
-       <y>24</y>
-       <width>149</width>
-       <height>149</height>
+       <x>3</x>
+       <y>27</y>
+       <width>152</width>
+       <height>152</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -301,10 +319,10 @@
      <widget class="QFrame" name="circleBar_2">
       <property name="geometry">
        <rect>
-        <x>-25</x>
-        <y>-25</y>
-        <width>199</width>
-        <height>199</height>
+        <x>-27</x>
+        <y>-27</y>
+        <width>208</width>
+        <height>208</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -317,9 +335,9 @@
      <widget class="QLabel" name="usedSize">
       <property name="geometry">
        <rect>
-        <x>25</x>
-        <y>58</y>
-        <width>100</width>
+        <x>1</x>
+        <y>57</y>
+        <width>152</width>
         <height>20</height>
        </rect>
       </property>
@@ -339,9 +357,9 @@
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>25</x>
-        <y>78</y>
-        <width>100</width>
+        <x>0</x>
+        <y>77</y>
+        <width>152</width>
         <height>16</height>
        </rect>
       </property>
@@ -357,8 +375,8 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>219</y>
-       <width>145</width>
+       <y>226</y>
+       <width>151</width>
        <height>20</height>
       </rect>
      </property>
@@ -370,8 +388,8 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>241</y>
-       <width>145</width>
+       <y>248</y>
+       <width>151</width>
        <height>20</height>
       </rect>
      </property>
@@ -383,8 +401,8 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>263</y>
-       <width>145</width>
+       <y>270</y>
+       <width>151</width>
        <height>20</height>
       </rect>
      </property>
@@ -396,8 +414,8 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>195</y>
-       <width>145</width>
+       <y>202</y>
+       <width>155</width>
        <height>20</height>
       </rect>
      </property>
@@ -407,7 +425,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Fast Access</string>
+      <string>Fast Check and Access</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -417,8 +435,8 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>285</y>
-       <width>145</width>
+       <y>289</y>
+       <width>155</width>
        <height>20</height>
       </rect>
      </property>
@@ -439,9 +457,9 @@
     <property name="geometry">
      <rect>
       <x>5</x>
-      <y>370</y>
-      <width>515</width>
-      <height>358</height>
+      <y>375</y>
+      <width>530</width>
+      <height>363</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -494,7 +512,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>TEMP</string>
+      <string>GPU</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
@@ -538,7 +556,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>TEMP</string>
+      <string>RAM</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_14">
@@ -559,8 +577,8 @@
       <rect>
        <x>6</x>
        <y>105</y>
-       <width>503</width>
-       <height>247</height>
+       <width>518</width>
+       <height>251</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -572,10 +590,10 @@
      <widget class="QFrame" name="usage">
       <property name="geometry">
        <rect>
-        <x>-7</x>
-        <y>-5</y>
-        <width>516</width>
-        <height>257</height>
+        <x>-5</x>
+        <y>-6</y>
+        <width>529</width>
+        <height>262</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -608,10 +626,10 @@
    <widget class="QFrame" name="settings">
     <property name="geometry">
      <rect>
-      <x>525</x>
-      <y>370</y>
-      <width>515</width>
-      <height>358</height>
+      <x>540</x>
+      <y>375</y>
+      <width>530</width>
+      <height>363</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -626,7 +644,7 @@
     <widget class="QLabel" name="label_27">
      <property name="geometry">
       <rect>
-       <x>5</x>
+       <x>6</x>
        <y>43</y>
        <width>440</width>
        <height>16</height>
@@ -638,7 +656,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Basic Disk Informations Section - Locations of Shortcuts to Check</string>
+      <string>Shortcuts</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit">
@@ -647,8 +665,8 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>5</x>
-       <y>76</y>
+       <x>6</x>
+       <y>62</y>
        <width>140</width>
        <height>20</height>
       </rect>
@@ -677,40 +695,14 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>76</y>
-       <width>360</width>
+       <x>151</x>
+       <y>62</y>
+       <width>373</width>
        <height>20</height>
       </rect>
      </property>
      <property name="focusPolicy">
       <enum>Qt::ClickFocus</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_4">
-     <property name="geometry">
-      <rect>
-       <x>5</x>
-       <y>60</y>
-       <width>115</width>
-       <height>12</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Name</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_5">
-     <property name="geometry">
-      <rect>
-       <x>151</x>
-       <y>60</y>
-       <width>324</width>
-       <height>12</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Location</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_3">
@@ -719,8 +711,8 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>5</x>
-       <y>101</y>
+       <x>6</x>
+       <y>87</y>
        <width>140</width>
        <height>20</height>
       </rect>
@@ -738,9 +730,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>101</y>
-       <width>360</width>
+       <x>151</x>
+       <y>87</y>
+       <width>373</width>
        <height>20</height>
       </rect>
      </property>
@@ -754,9 +746,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>126</y>
-       <width>360</width>
+       <x>151</x>
+       <y>112</y>
+       <width>373</width>
        <height>20</height>
       </rect>
      </property>
@@ -770,8 +762,8 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>5</x>
-       <y>126</y>
+       <x>6</x>
+       <y>112</y>
        <width>140</width>
        <height>20</height>
       </rect>
@@ -830,8 +822,8 @@
     <widget class="QPushButton" name="clearTrashButton_2">
      <property name="geometry">
       <rect>
-       <x>254</x>
-       <y>330</y>
+       <x>268</x>
+       <y>335</y>
        <width>126</width>
        <height>22</height>
       </rect>
@@ -843,8 +835,8 @@
     <widget class="QPushButton" name="clearTrashButton_3">
      <property name="geometry">
       <rect>
-       <x>384</x>
-       <y>330</y>
+       <x>398</x>
+       <y>335</y>
        <width>126</width>
        <height>22</height>
       </rect>
@@ -853,14 +845,74 @@
       <string>Apply Changes</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="pushButton_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>300</y>
+       <width>80</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>defrag disk</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_7">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>180</y>
+       <width>373</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_28">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>440</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>config file *</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>210</y>
+       <width>291</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>* Config settigs will be applied on the program's restart</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QFrame" name="tasks">
     <property name="geometry">
      <rect>
-      <x>525</x>
+      <x>540</x>
       <y>5</y>
-      <width>515</width>
-      <height>358</height>
+      <width>530</width>
+      <height>363</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -877,8 +929,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>520</width>
-       <height>358</height>
+       <width>530</width>
+       <height>363</height>
       </rect>
      </property>
      <property name="horizontalScrollBarPolicy">
@@ -991,7 +1043,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1045</width>
+     <width>1075</width>
      <height>21</height>
     </rect>
    </property>
