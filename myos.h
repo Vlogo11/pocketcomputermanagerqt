@@ -63,5 +63,6 @@ class MyOS : public QMainWindow {
                 }
             } return gpuDescription;
         }
+        void Type();
 };
 #endif // MYOS_H

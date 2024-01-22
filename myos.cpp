@@ -4,7 +4,7 @@
 MyOS::MyOS(QWidget *parent):QMainWindow(parent), ui(new Ui::MyOS) {
     ui->setupUi(this);
     diskSpace(); specs(); graph(); fileExplorer(); settings(); taskManager(); cpuLoad();
-    setFixedSize(540, 395);
+    setFixedSize(600, 415);
     QIcon appIcon(QCoreApplication::applicationDirPath() + "/Images/icon.png"); setWindowIcon(appIcon);
     setWindowTitle("Pocket Computer Manager");
     QTimer *timer = new QTimer(); connect(timer, &QTimer::timeout, this, &MyOS::cpuLoad); timer->start(1000);
@@ -12,6 +12,14 @@ MyOS::MyOS(QWidget *parent):QMainWindow(parent), ui(new Ui::MyOS) {
     ui->label_29->setText(QString("CPU usage and load in the last minute: (Usage: X%, Load: %1%)").arg(QString::number(getCpuLoad, 'f', 1)));
 }
 MyOS::~MyOS(){delete ui;}
+void setLabelIcon(QLabel* label, const QString& imagePath) {QIcon icon(QCoreApplication::applicationDirPath() + imagePath); label->setPixmap(icon.pixmap(label->size()));}
+void updateStorageInfo(const QString& path, qint64& size, QLabel* label) {
+    QDirIterator it(path, QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories);
+    while (it.hasNext()) {size += QFileInfo(it.next()).size();}
+    QString unit; double sizeInMB = static_cast<double>(size) / (1024.0 * 1024.0);
+    if (size < 1073741824) {unit = "MB"; label->setText(QString::number(sizeInMB, 'f', 1) + " " + unit);}
+    else {sizeInMB /= 1024.0; unit = "GB"; label->setText(QString::number(sizeInMB, 'f', 2) + " " + unit);}
+}
 void MyOS::diskSpace() {
     ULARGE_INTEGER total_size, free_size, used_size;
     if (!GetDiskFreeSpaceEx(NULL, &free_size, &total_size, &used_size)) {}
@@ -19,34 +27,24 @@ void MyOS::diskSpace() {
     int used_percent = (int)((double)used_size.QuadPart / (double)total_size.QuadPart * 100);
     QString round_used = QString::number((double) used_size.QuadPart / 1073741824, 'f', 2);
     ui->diskInfo->setStyleSheet("QFrame#diskInfo {border: 1px solid black;}");
-    QIcon cpuicon(QCoreApplication::applicationDirPath() + "/Images/cpu.png"); ui->label_13->setPixmap(cpuicon.pixmap(ui->label_13->size()));
-    QIcon gpuicon(QCoreApplication::applicationDirPath() + "/Images/gpu.png"); ui->label_20->setPixmap(gpuicon.pixmap(ui->label_14->size()));
-    QIcon ramicon(QCoreApplication::applicationDirPath() + "/Images/ram.png"); ui->label_14->setPixmap(ramicon.pixmap(ui->label_14->size()));
+    setLabelIcon(ui->label_13, "/Images/cpu.png"); setLabelIcon(ui->label_20, "/Images/gpu.png"); setLabelIcon(ui->label_14, "/Images/ram.png");
     QIcon binIcon(QCoreApplication::applicationDirPath() + "/Images/bin.png"); ui->clearTrashButton->setIcon(binIcon.pixmap(ui->clearTrashButton->size()));
     connect(ui->clearTrashButton, &QPushButton::clicked, [this, binIcon]() {
         SHEmptyRecycleBin(NULL, NULL, SHERB_NOCONFIRMATION|SHERB_NOPROGRESSUI|SHERB_NOSOUND);
         QIcon successIcon(QCoreApplication::applicationDirPath() + "/Images/success.png"); ui->clearTrashButton->setIcon(successIcon.pixmap(ui->clearTrashButton->size()));
         QTimer::singleShot(3000, [this, binIcon]() {ui->clearTrashButton->setIcon(binIcon.pixmap(ui->clearTrashButton->size()));});
     });
-    QString perfText = QString("<table><td width=\"50%\" align=\"left\">Performance</td><td width=\"50%\" align=\"right\">100%</td></table>");
-    QString condText = QString("<table><td width=\"50%\" align=\"left\">Condition</td><td width=\"50%\" align=\"right\">100%</td></table>");
-    QString dataText = QString("<table><td width=\"50%\" align=\"left\">Data Written</td><td width=\"50%\" align=\"right\">X TB</td></table>");
-    ui->storage_9->setText(perfText); ui->storage_10->setText(condText); ui->storage_13->setText(dataText);
+    ui->storage_9->setText("<table><td width=\"50%\" align=\"left\">Performance</td><td width=\"50%\" align=\"right\">100%</td></table>");
+    ui->storage_10->setText("<table><td width=\"50%\" align=\"left\">Condition</td><td width=\"50%\" align=\"right\">100%</td></table>");
+    ui->storage_13->setText("<table><td width=\"50%\" align=\"left\">Data Written</td><td width=\"50%\" align=\"right\">X TB</td></table>");
 
-    qint64 images_size = 0, downloads_size = 0, docs_size = 0, others = used_size.QuadPart - downloads_size - images_size - docs_size;
-    QDirIterator it(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation), QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories);
-    while (it.hasNext()) {images_size += QFileInfo(it.next()).size();}
-    if (images_size < 1073741824) {ui->storage_6->setText(QString::number(images_size / 1024.0 / 1024.0, 'f', 1) + " MB");}
-    else {ui->storage_6->setText(QString::number(images_size / 1024.0 / 1024.0 / 1024.0, 'f', 2) + " GB");}
-    QDirIterator it1(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation), QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories);
-    while (it1.hasNext()) {downloads_size += QFileInfo(it1.next()).size();}
-    if (downloads_size < 1073741824) {ui->storage_7->setText(QString::number(downloads_size / 1024.0 / 1024.0, 'f', 1) + " MB");}
-    else {ui->storage_7->setText(QString::number(downloads_size / 1024.0 / 1024.0 / 1024.0, 'f', 2) + " GB");}
-    QDirIterator it2(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories);
-    while (it2.hasNext()) {docs_size += QFileInfo(it2.next()).size();}
-    if (docs_size < 1073741824) {ui->label_6->setText(QString::number(docs_size / 1024.0 / 1024.0, 'f', 1) + " MB");}
-    else {ui->label_6->setText(QString::number(docs_size / 1024.0 / 1024.0 / 1024.0, 'f', 2) + " GB");}
-    ui->lineEdit_2->setText(it.path()); ui->lineEdit_5->setText(it1.path()); ui->lineEdit_4->setText(it2.path());
+    qint64 images_size = 0, downloads_size = 0, docs_size = 0;
+    updateStorageInfo(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation), images_size, ui->storage_6);
+    ui->lineEdit_2->setText(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
+    updateStorageInfo(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation), downloads_size, ui->storage_7);
+    ui->lineEdit_5->setText(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
+    updateStorageInfo(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), docs_size, ui->label_6);
+    ui->lineEdit_4->setText(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
 
     QHBoxLayout* layout = new QHBoxLayout; layout->addWidget(ui->storage_2); layout->addWidget(ui->storage_6); layout->setContentsMargins(5, 0, 5, 0);
     ui->storage_2->setStyleSheet("color: #008F00;"); ui->pushButton_2->setLayout(layout);
@@ -60,28 +58,20 @@ void MyOS::diskSpace() {
     QPieSlice *imagesSlice = series->append("Images", images_size); imagesSlice->setColor(QColor("#008000")); imagesSlice->setBorderColor(QColor("#008000"));
     QPieSlice *docsSlice = series->append("Docs", docs_size); docsSlice->setColor(QColor("#6495ED")); docsSlice->setBorderColor(QColor("#6495ED"));
     QPieSlice *downloadsSlice = series->append("Downloads", downloads_size); downloadsSlice->setColor(QColor("#FF0000")); downloadsSlice->setBorderColor(QColor("#FF0000"));
-    QPieSlice *othersSlice = series->append("Others", others); othersSlice->setColor(QColor("#FFA500")); othersSlice->setBorderColor(QColor("#FFA500"));
-    qint64 totalSizeQint = (static_cast<qint64>(total_size.u.HighPart) << 32) | total_size.u.LowPart;
-    qint64 usedSizeQint = (static_cast<qint64>(used_size.u.HighPart) << 32) | used_size.u.LowPart;
-    float remainingSize = static_cast<float>(totalSizeQint - usedSizeQint);
-    QPieSlice *remainingSlice = series->append("Remaining", remainingSize); remainingSlice->setColor(Qt::white); series->append(remainingSlice);
+    QPieSlice *othersSlice = series->append("Others", used_size.QuadPart - images_size - docs_size - downloads_size); othersSlice->setColor(QColor("#FFA500")); othersSlice->setBorderColor(QColor("#FFA500"));
+    QPieSlice *remainingSlice = series->append("Remaining", static_cast<float>(total_size.QuadPart - used_size.QuadPart)); remainingSlice->setColor(Qt::white); series->append(remainingSlice);
     QChart *chart = new QChart(); chart->addSeries(series); chart->legend()->hide(); chart->setBackgroundBrush(QColor(0, 0, 0, 0));
     QChartView *chartView = new QChartView(chart, ui->circleBar_2); chartView->setGeometry(0, 0, ui->circleBar_2->width(), ui->circleBar_2->height());
     chartView->setRenderHint(QPainter::Antialiasing);
 
-    QString os_drive = QCoreApplication::applicationFilePath().left(1);
     for (const QStorageInfo& storage : QStorageInfo::mountedVolumes()) {
-        QString name = storage.rootPath().left(1);
-        QString disks = name + " - " + QString::number(storage.bytesTotal() / (1024 * 1024 * 1024.0), 'f', 2) + " GB";
-        if (name == os_drive) {disks += " - OS";} ui->otherDisks->addItem(disks);
+        QString disks = storage.rootPath().left(1) + " - " + QString::number(storage.bytesTotal() / (1024 * 1024 * 1024.0), 'f', 2) + " GB";
+        if (storage.rootPath().left(1) == QCoreApplication::applicationFilePath().left(1)) {disks += " - OS";} ui->otherDisks->addItem(disks);
         connect(ui->otherDisks, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
-            QString diskInfo = ui->otherDisks->itemText(index);
-            QString name = diskInfo.section(" - ", 0, 0);
             for (const QStorageInfo& storage : QStorageInfo::mountedVolumes()) {
-                if (storage.rootPath().left(1) == name) { float gb = 1024 * 1024 * 1024.0;
-                    double usedGB = (storage.bytesTotal() - storage.bytesAvailable()) / (gb), totalGB = storage.bytesTotal() / (gb);
-                    int usedPercent = (usedGB / totalGB) * 100;
-                    ui->label->setText(QString::number(usedGB, 'f', 2) + " GB"); ui->usedSize->setText(QString::number(usedPercent) + "%");
+                if (storage.rootPath().left(1) == ui->otherDisks->itemText(index).section(" - ", 0, 0)) {
+                    double usedGB = (storage.bytesTotal() - storage.bytesAvailable()) / 1073741824.0, totalGB = storage.bytesTotal() / 1073741824.0;
+                    ui->label->setText(QString::number(usedGB, 'f', 2) + " GB"); ui->usedSize->setText(QString::number((usedGB / totalGB) * 100) + "%");
                 }
             }
         });
@@ -154,7 +144,7 @@ void MyOS::graph() {
 void MyOS::fileExplorer() {
     ui->treeView->setStyleSheet("QTreeView#treeView { border: 0px solid black; background-color: transparent;}");
     QFileSystemModel* model = new QFileSystemModel; model->setRootPath(QDir::currentPath()); ui->treeView->setModel(model);
-    ui->treeView->header()->resizeSection(0, 265); ui->treeView->header()->resizeSection(1, 70);
+    ui->treeView->header()->resizeSection(0, 335); ui->treeView->header()->resizeSection(1, 70);
     ui->treeView->setColumnHidden(2, true); ui->treeView->setColumnHidden(3, true); ui->treeView->setRootIsDecorated(false);
     connect(ui->treeView, &QTreeView::doubleClicked, [=, this](const QModelIndex& index) {
         ui->usernameLineEdit_2->setText(model->filePath(index));
@@ -167,8 +157,7 @@ void MyOS::fileExplorer() {
     fileMenu->addAction(deleteAction); fileMenu->addAction(cutAction); fileMenu->addAction(copyAction);
     fileMenu->addAction(renameAction); fileMenu->addAction(pasteAction);
     connect(ui->treeView, &QTreeView::customContextMenuRequested, [=, this](const QPoint& pos) {
-        QModelIndex index = ui->treeView->indexAt(pos);
-        if (index.isValid()) {
+        if (ui->treeView->indexAt(pos).isValid()) {
             QPoint globalPos = ui->treeView->mapToGlobal(pos);
             deleteAction->setEnabled(true); cutAction->setEnabled(true); copyAction->setEnabled(true);
             renameAction->setEnabled(true); pasteAction->setEnabled(true); fileMenu->exec(globalPos);
@@ -211,8 +200,7 @@ void MyOS::fileExplorer() {
     });
     ui->usernameLineEdit_3->setStyleSheet("border: 1px solid #E5E5E5;");
     ui->pushButton->setStyleSheet("border: 1px solid #E5E5E5; background-color: #FFFFFF;");
-    QStandardItemModel* searchModel;
-    searchModel = new QStandardItemModel(0, 2);
+    QStandardItemModel* searchModel = new QStandardItemModel(0, 2);
     connect(ui->usernameLineEdit_3, &QLineEdit::returnPressed, [=, this]() {
         QString searchTerm = ui->usernameLineEdit_3->text();
         QTime startTime = QTime::currentTime();
@@ -232,22 +220,20 @@ void MyOS::fileExplorer() {
             searchFiles(QDir(model->rootPath()));
             QMetaObject::invokeMethod(this, [=]() {
                 QString countText = tr("%1 results for \"%2\"").arg(results.size()).arg(searchTerm);
-                QStandardItem* rootItem = searchModel->invisibleRootItem(); QStandardItem* countItem = new QStandardItem(countText);
-                countItem->setSelectable(false);
-                rootItem->appendRow(countItem);
+                QStandardItem* countItem = new QStandardItem(countText);
+                countItem->setSelectable(false); searchModel->invisibleRootItem()->appendRow(countItem);
                 for (const QString& result : results) {
-                    QFileInfo fileInfo(result);
-                    QString name = fileInfo.fileName(), size = "Folder";
+                    QFileInfo fileInfo(result); QString size = "Folder";
                     if (fileInfo.isFile()) {
                         if (fileInfo.size() < 1024 * 1024) { size = QString("%1 kB").arg(fileInfo.size() / 1024); }
                         else if (fileInfo.size() < 1024 * 1024 * 1024) { size = QString("%1 MB").arg(fileInfo.size() / 1024 / 1024); }
                         else { size = QString("%1 GB").arg(fileInfo.size() / 1024 / 1024 / 1024); }
                     }
-                    QStandardItem* sizeItem = new QStandardItem(size); QStandardItem* nameItem = new QStandardItem(name);
+                    QStandardItem* sizeItem = new QStandardItem(size); QStandardItem* nameItem = new QStandardItem(fileInfo.fileName());
                     nameItem->setData(result, Qt::UserRole); nameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled); nameItem->setToolTip(result);
-                    QList<QStandardItem*> rowItems; rowItems << nameItem << sizeItem; rootItem->appendRow(rowItems);
+                    QList<QStandardItem*> rowItems; rowItems << nameItem << sizeItem; searchModel->invisibleRootItem()->appendRow(rowItems);
                 }
-                ui->treeView->setModel(searchModel); ui->treeView->header()->resizeSection(0, 295); ui->treeView->header()->resizeSection(1, 60);
+                ui->treeView->setModel(searchModel); ui->treeView->header()->resizeSection(0, 340); ui->treeView->header()->resizeSection(1, 60);
                 QTime endTime = QTime::currentTime(); int elapsedTime = startTime.secsTo(endTime);
                 int hours = elapsedTime / 3600; int minutes = (elapsedTime % 3600) / 60; int seconds = elapsedTime % 60;
                 QString elapsedTimeString = QString("%1:%2:%3").arg(hours, 2, 10, QChar('0')).arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0'));
@@ -270,42 +256,36 @@ void MyOS::fileExplorer() {
     ui->pushButton->setIconSize(ui->pushButton->size()); ui->pushButton->setIcon(backicon);
 }
 void MyOS::taskManager() {
-    connect(ui->menuTask_Manager, &QMenu::aboutToShow, [this]() { ui->diskInfo->hide();ui->specs->hide();ui->tasks->show();ui->tasks->move(5, 5);ui->settings->hide();});
-    DWORD processIds[1024], bytesReturned;
-    if (EnumProcesses(processIds, sizeof(processIds), &bytesReturned)) {
-        int numProcesses = bytesReturned / sizeof(DWORD);
-        ui->taskManager->setColumnCount(5);
-        ui->taskManager->setHorizontalHeaderLabels({"Program's Name", "RAM", "CPU", "GPU", "HDD"});
-        ui->taskManager->horizontalHeader()->resizeSection(0, 233); ui->taskManager->horizontalHeader()->resizeSection(1, 70);
-        ui->taskManager->horizontalHeader()->resizeSection(2, 70); ui->taskManager->horizontalHeader()->resizeSection(3, 70);
-        ui->taskManager->horizontalHeader()->resizeSection(4, 70);
-        ui->taskManager->verticalHeader()->setVisible(false);
-        ui->taskManager->setStyleSheet("QTableWidget { border: 1px solid black; background-color: transparent;}");
-        QStringList uniquePrograms;
-        for (int i = 0; i < numProcesses; i++) {
-            HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processIds[i]);
-            if (hProcess) {
+    connect(ui->menuTask_Manager, &QMenu::aboutToShow, [this]() {ui->diskInfo->hide(); ui->specs->hide(); ui->tasks->show(); ui->tasks->move(5, 5); ui->settings->hide();});
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [this]() {
+        DWORD processIds[1024], bytesReturned;
+        if (EnumProcesses(processIds, sizeof(processIds), &bytesReturned)) {
+            int numProcesses = bytesReturned / sizeof(DWORD), sections[] = {251, 80, 80, 80, 80};
+            for (int i = 0; i < 5; ++i) {ui->taskManager->horizontalHeader()->resizeSection(i, sections[i]);}
+            ui->taskManager->setStyleSheet("QTableWidget { border: 1px solid black; background-color: transparent;}");
+            QStringList uniquePrograms; double sum = 0;
+            ui->taskManager->clearContents(); ui->taskManager->setRowCount(0); ui->taskManager->insertRow(0);
+            for (int i = 0; i < numProcesses; i++) {
+                HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processIds[i]);
                 WCHAR processName[MAX_PATH];
                 DWORD size = sizeof(processName) / sizeof(WCHAR);
                 if (QueryFullProcessImageName(hProcess, 0, processName, &size)) {
                     QFileInfo fileInfo(QString::fromWCharArray(processName));
-                    QString programName = fileInfo.fileName();
-                    if (!programName.isEmpty() && !uniquePrograms.contains(programName)) {
-                        uniquePrograms.append(programName);
-                        QTableWidgetItem* nameItem = new QTableWidgetItem(programName);
-                        PROCESS_MEMORY_COUNTERS_EX pmc;
-                        if (GetProcessMemoryInfo(hProcess, reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc))) {
-                            double memoryUsageMB = static_cast<double>(pmc.PrivateUsage) / (1024.0 * 1024.0);
-                            QTableWidgetItem* memoryItem = new QTableWidgetItem(QString::number(memoryUsageMB, 'f', 1) + " MB");
-                            int rowCount = ui->taskManager->rowCount();
-                            ui->taskManager->insertRow(rowCount); ui->taskManager->setItem(rowCount, 0, nameItem);
-                            ui->taskManager->setItem(rowCount, 1, memoryItem);
-                        }
+                    QString programName = fileInfo.fileName(); uniquePrograms.append(programName);
+                    QTableWidgetItem* nameItem = new QTableWidgetItem(programName);
+                    PROCESS_MEMORY_COUNTERS_EX pmc;
+                    if (GetProcessMemoryInfo(hProcess, reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc))) {
+                        sum += pmc.PeakPagefileUsage / (1024.0 * 1024.0);
+                        ui->taskManager->setItem(0, 0, new QTableWidgetItem("Overall")); ui->taskManager->setItem(0, 1, new QTableWidgetItem(QString::number(sum, 'f', 1) + " MB"));
+                        QTableWidgetItem* memoryItem = new QTableWidgetItem(QString::number(pmc.PeakPagefileUsage / (1024.0 * 1024.0), 'f', 1) + " MB");
+                        int rowCount = ui->taskManager->rowCount();
+                        ui->taskManager->insertRow(rowCount); ui->taskManager->setItem(rowCount, 0, nameItem); ui->taskManager->setItem(rowCount, 1, memoryItem);
                     }
                 }
             }
         }
-    }
+    }); timer->start(1000);
 }
 void MyOS::settings() {
     ui->settings->setStyleSheet("QFrame#settings { border: 1px solid black; background-color: transparent;}");
