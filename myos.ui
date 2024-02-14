@@ -452,24 +452,6 @@
       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
      </property>
     </widget>
-    <widget class="QComboBox" name="otherDisks_2">
-     <property name="geometry">
-      <rect>
-       <x>435</x>
-       <y>6</y>
-       <width>149</width>
-       <height>18</height>
-      </rect>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <item>
-      <property name="text">
-       <string>Sort by</string>
-      </property>
-     </item>
-    </widget>
     <widget class="QPushButton" name="clearTrashButton_5">
      <property name="geometry">
       <rect>
@@ -861,53 +843,6 @@
      </property>
      <property name="text">
       <string>Reset Settings</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_7">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>180</y>
-       <width>373</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_28">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>160</y>
-       <width>440</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>config file *</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>210</y>
-       <width>291</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>* Config settigs will be applied on the program's restart</string>
      </property>
     </widget>
    </widget>

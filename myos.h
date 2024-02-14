@@ -21,6 +21,9 @@ class MyOS : public QMainWindow {
         void fileExplorer();
         void settings();
         void taskManager();
+        void newPath(const QString& newPath, QFileSystemModel* model);
+        void saveShortcuts();
+        void loadShortcuts();
     private:
         Ui::MyOS *ui;
         float cpuLoad() {
@@ -63,6 +66,5 @@ class MyOS : public QMainWindow {
                 }
             } return gpuDescription;
         }
-        void Type();
 };
 #endif // MYOS_H
