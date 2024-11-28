@@ -3,7 +3,7 @@
 
 MyOS::MyOS(QWidget *parent):QMainWindow(parent), ui(new Ui::MyOS) {
     ui->setupUi(this);
-    diskSpace(); specs(); fileExplorer(); settings(); taskManager(); cpuLoad(); loadShortcuts();
+    diskSpace(); specs(); graph(); fileExplorer(); settings(); taskManager(); cpuLoad(); loadShortcuts();
     setFixedSize(589, 393);
     QIcon appIcon(QCoreApplication::applicationDirPath() + "/Images/icon.png"); setWindowIcon(appIcon);
     setWindowTitle("Pocket Computer Manager");
@@ -101,6 +101,8 @@ void MyOS::specs() {
             ui->label_15->setText(QString("%1 (%2 °C, %3%, %4/%5 MB)").arg(gpuDescription).arg(gputemp).arg(gpuusage).arg(gpumemusage).arg(gpumaxmem));
         }); timer2->start(1000);
     } gpuDescription.remove("(R)");
+}
+void MyOS::graph() {
     QLineSeries *series = new QLineSeries();
     QTimer *timer = new QTimer(); timer->start(1000);
     int i = 0; bool isRAMUsage = false; bool isCPULoad = true; bool isGPUUsage = false;

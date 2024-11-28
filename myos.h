@@ -21,6 +21,7 @@ class MyOS : public QMainWindow {
         void settings();
         void taskManager();
         void newPath(const QString& newPath, QFileSystemModel* model);
+        void graph();
         void saveShortcuts();
         void loadShortcuts();
     private:
