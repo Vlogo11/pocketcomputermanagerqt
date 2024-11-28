@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1250</width>
-    <height>840</height>
+    <width>1190</width>
+    <height>810</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,10 +26,10 @@
    <widget class="QFrame" name="diskInfo">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>5</y>
+      <x>0</x>
+      <y>0</y>
       <width>590</width>
-      <height>382</height>
+      <height>372</height>
      </rect>
     </property>
     <property name="font">
@@ -47,24 +47,11 @@
 </string>
     </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::Shape::StyledPanel</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
+     <enum>QFrame::Shadow::Raised</enum>
     </property>
-    <widget class="QPushButton" name="clearTrashButton">
-     <property name="geometry">
-      <rect>
-       <x>5</x>
-       <y>183</y>
-       <width>151</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Clear bin</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="downloads_circle">
      <property name="geometry">
       <rect>
@@ -91,54 +78,6 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="storage_9">
-     <property name="geometry">
-      <rect>
-       <x>3</x>
-       <y>304</y>
-       <width>155</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Performance - 100%</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="storage_10">
-     <property name="geometry">
-      <rect>
-       <x>3</x>
-       <y>320</y>
-       <width>155</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Condition - 100%</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="storage_13">
-     <property name="geometry">
-      <rect>
-       <x>3</x>
-       <y>336</y>
-       <width>155</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Data Written - X TB</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
     <widget class="QFrame" name="circleBar">
      <property name="geometry">
       <rect>
@@ -149,10 +88,10 @@
       </rect>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <widget class="QFrame" name="circleBar_2">
       <property name="geometry">
@@ -164,10 +103,10 @@
        </rect>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
      </widget>
      <widget class="QLabel" name="usedSize">
@@ -189,7 +128,7 @@
        <string>X%</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label">
@@ -205,7 +144,7 @@
        <string>X GB</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
     </widget>
@@ -213,7 +152,7 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>225</y>
+       <y>203</y>
        <width>151</width>
        <height>20</height>
       </rect>
@@ -226,7 +165,7 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>247</y>
+       <y>225</y>
        <width>151</width>
        <height>20</height>
       </rect>
@@ -239,7 +178,7 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>269</y>
+       <y>247</y>
        <width>151</width>
        <height>20</height>
       </rect>
@@ -252,9 +191,9 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>201</y>
-       <width>155</width>
-       <height>20</height>
+       <y>182</y>
+       <width>124</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="font">
@@ -266,57 +205,36 @@
       <string>Fast Check and Access</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+      <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
      </property>
     </widget>
-    <widget class="QLabel" name="storage_12">
+    <widget class="QPushButton" name="clearTrashButton">
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>287</y>
-       <width>155</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>More Disk Information</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="clearTrashButton_5">
-     <property name="geometry">
-      <rect>
-       <x>5</x>
-       <y>356</y>
+       <y>346</y>
        <width>151</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>Defrag Disk</string>
+      <string>Clear Bin</string>
      </property>
     </widget>
     <widget class="QFrame" name="explorerFrame">
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>6</y>
-       <width>424</width>
+       <y>1</y>
+       <width>429</width>
        <height>370</height>
       </rect>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
@@ -336,8 +254,8 @@
        <rect>
         <x>2</x>
         <y>25</y>
-        <width>417</width>
-        <height>340</height>
+        <width>421</width>
+        <height>339</height>
        </rect>
       </property>
       <property name="font">
@@ -346,7 +264,7 @@
        </font>
       </property>
       <property name="focusPolicy">
-       <enum>Qt::ClickFocus</enum>
+       <enum>Qt::FocusPolicy::ClickFocus</enum>
       </property>
       <property name="acceptDrops">
        <bool>true</bool>
@@ -355,10 +273,10 @@
        <number>0</number>
       </property>
       <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAsNeeded</enum>
+       <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
       </property>
       <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
+       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
       </property>
       <property name="autoScrollMargin">
        <number>10</number>
@@ -373,16 +291,16 @@
        <bool>true</bool>
       </property>
       <property name="dragDropMode">
-       <enum>QAbstractItemView::DragDrop</enum>
+       <enum>QAbstractItemView::DragDropMode::DragDrop</enum>
       </property>
       <property name="defaultDropAction">
-       <enum>Qt::TargetMoveAction</enum>
+       <enum>Qt::DropAction::TargetMoveAction</enum>
       </property>
       <property name="selectionMode">
-       <enum>QAbstractItemView::SingleSelection</enum>
+       <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
       </property>
       <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectRows</enum>
+       <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
       </property>
       <property name="autoExpandDelay">
        <number>-1</number>
@@ -424,12 +342,12 @@
        <rect>
         <x>284</x>
         <y>5</y>
-        <width>135</width>
+        <width>140</width>
         <height>18</height>
        </rect>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
       <property name="placeholderText">
        <string>Search</string>
@@ -440,20 +358,20 @@
    <widget class="QFrame" name="specs">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>400</y>
+      <x>-1</x>
+      <y>376</y>
       <width>590</width>
-      <height>382</height>
+      <height>372</height>
      </rect>
     </property>
     <property name="autoFillBackground">
      <bool>true</bool>
     </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::Shape::StyledPanel</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
+     <enum>QFrame::Shadow::Raised</enum>
     </property>
     <widget class="QLabel" name="label_11">
      <property name="geometry">
@@ -470,7 +388,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Machine's Name</string>
+      <string>Specifications</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_13">
@@ -560,16 +478,16 @@
      <property name="geometry">
       <rect>
        <x>6</x>
-       <y>105</y>
+       <y>104</y>
        <width>578</width>
-       <height>271</height>
+       <height>261</height>
       </rect>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <widget class="QFrame" name="usage">
       <property name="geometry">
@@ -577,14 +495,14 @@
         <x>-5</x>
         <y>-6</y>
         <width>589</width>
-        <height>282</height>
+        <height>272</height>
        </rect>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
      </widget>
     </widget>
@@ -592,7 +510,7 @@
      <property name="geometry">
       <rect>
        <x>6</x>
-       <y>85</y>
+       <y>84</y>
        <width>550</width>
        <height>20</height>
       </rect>
@@ -610,26 +528,26 @@
    <widget class="QFrame" name="settings">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>400</y>
+      <x>598</x>
+      <y>373</y>
       <width>590</width>
-      <height>382</height>
+      <height>372</height>
      </rect>
     </property>
     <property name="autoFillBackground">
      <bool>true</bool>
     </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::Shape::StyledPanel</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
+     <enum>QFrame::Shadow::Raised</enum>
     </property>
     <widget class="QLabel" name="label_27">
      <property name="geometry">
       <rect>
        <x>6</x>
-       <y>43</y>
+       <y>2</y>
        <width>440</width>
        <height>16</height>
       </rect>
@@ -650,7 +568,7 @@
      <property name="geometry">
       <rect>
        <x>6</x>
-       <y>62</y>
+       <y>21</y>
        <width>160</width>
        <height>20</height>
       </rect>
@@ -661,7 +579,7 @@
       </font>
      </property>
      <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
+      <enum>Qt::FocusPolicy::ClickFocus</enum>
      </property>
      <property name="text">
       <string>Pictures</string>
@@ -680,13 +598,13 @@
      <property name="geometry">
       <rect>
        <x>171</x>
-       <y>62</y>
-       <width>414</width>
+       <y>21</y>
+       <width>413</width>
        <height>20</height>
       </rect>
      </property>
      <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
+      <enum>Qt::FocusPolicy::ClickFocus</enum>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_3">
@@ -696,13 +614,13 @@
      <property name="geometry">
       <rect>
        <x>6</x>
-       <y>87</y>
+       <y>45</y>
        <width>160</width>
        <height>20</height>
       </rect>
      </property>
      <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
+      <enum>Qt::FocusPolicy::ClickFocus</enum>
      </property>
      <property name="text">
       <string>Documents</string>
@@ -715,13 +633,13 @@
      <property name="geometry">
       <rect>
        <x>171</x>
-       <y>87</y>
-       <width>414</width>
+       <y>45</y>
+       <width>413</width>
        <height>20</height>
       </rect>
      </property>
      <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
+      <enum>Qt::FocusPolicy::ClickFocus</enum>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_5">
@@ -731,13 +649,13 @@
      <property name="geometry">
       <rect>
        <x>171</x>
-       <y>112</y>
-       <width>414</width>
+       <y>69</y>
+       <width>413</width>
        <height>20</height>
       </rect>
      </property>
      <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
+      <enum>Qt::FocusPolicy::ClickFocus</enum>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_6">
@@ -747,80 +665,36 @@
      <property name="geometry">
       <rect>
        <x>6</x>
-       <y>112</y>
+       <y>69</y>
        <width>160</width>
        <height>20</height>
       </rect>
      </property>
      <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
+      <enum>Qt::FocusPolicy::ClickFocus</enum>
      </property>
      <property name="text">
       <string>Downloads</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_23">
-     <property name="geometry">
-      <rect>
-       <x>5</x>
-       <y>0</y>
-       <width>446</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Basic settings</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_4">
-     <property name="geometry">
-      <rect>
-       <x>5</x>
-       <y>19</y>
-       <width>100</width>
-       <height>18</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Dark Mode</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_5">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>19</y>
-       <width>325</width>
-       <height>18</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Pin Window</string>
      </property>
     </widget>
    </widget>
    <widget class="QFrame" name="tasks">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>5</y>
-      <width>590</width>
-      <height>382</height>
+      <x>600</x>
+      <y>-5</y>
+      <width>591</width>
+      <height>373</height>
      </rect>
     </property>
     <property name="autoFillBackground">
      <bool>true</bool>
     </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::Shape::StyledPanel</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
+     <enum>QFrame::Shadow::Raised</enum>
     </property>
     <widget class="QTableWidget" name="taskManager">
      <property name="geometry">
@@ -828,7 +702,7 @@
        <x>0</x>
        <y>0</y>
        <width>590</width>
-       <height>382</height>
+       <height>373</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -838,10 +712,10 @@
       </size>
      </property>
      <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::NoSelection</enum>
+      <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
      </property>
      <property name="columnCount">
       <number>5</number>
@@ -879,8 +753,8 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>780</y>
+      <x>56</x>
+      <y>750</y>
       <width>84</width>
       <height>20</height>
      </rect>
@@ -889,14 +763,14 @@
      <string>X GB </string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="storage_7">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>797</y>
+      <x>56</x>
+      <y>767</y>
       <width>84</width>
       <height>20</height>
      </rect>
@@ -905,14 +779,14 @@
      <string>X GB </string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="storage_3">
     <property name="geometry">
      <rect>
-      <x>104</x>
-      <y>797</y>
+      <x>10</x>
+      <y>767</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -921,14 +795,14 @@
      <string>Downloads</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="storage_4">
     <property name="geometry">
      <rect>
-      <x>104</x>
-      <y>780</y>
+      <x>10</x>
+      <y>750</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -937,14 +811,14 @@
      <string>Documents</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="storage_6">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>790</y>
+      <x>246</x>
+      <y>760</y>
       <width>84</width>
       <height>20</height>
      </rect>
@@ -953,14 +827,14 @@
      <string>X GB </string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="storage_2">
     <property name="geometry">
      <rect>
-      <x>294</x>
-      <y>790</y>
+      <x>200</x>
+      <y>760</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -969,7 +843,7 @@
      <string>Pictures</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
     </property>
    </widget>
   </widget>
@@ -978,7 +852,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1250</width>
+     <width>1190</width>
      <height>21</height>
     </rect>
    </property>

@@ -17,7 +17,6 @@ class MyOS : public QMainWindow {
     private slots:
         void diskSpace();
         void specs();
-        void graph();
         void fileExplorer();
         void settings();
         void taskManager();

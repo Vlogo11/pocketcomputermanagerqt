@@ -3,8 +3,8 @@
 
 MyOS::MyOS(QWidget *parent):QMainWindow(parent), ui(new Ui::MyOS) {
     ui->setupUi(this);
-    diskSpace(); specs(); graph(); fileExplorer(); settings(); taskManager(); cpuLoad(); loadShortcuts();
-    setFixedSize(600, 415);
+    diskSpace(); specs(); fileExplorer(); settings(); taskManager(); cpuLoad(); loadShortcuts();
+    setFixedSize(589, 393);
     QIcon appIcon(QCoreApplication::applicationDirPath() + "/Images/icon.png"); setWindowIcon(appIcon);
     setWindowTitle("Pocket Computer Manager");
     QTimer *timer = new QTimer(); connect(timer, &QTimer::timeout, this, &MyOS::cpuLoad); timer->start(1000); float getCpuLoad = cpuLoad();
@@ -25,7 +25,6 @@ void MyOS::diskSpace() {
     used_size.QuadPart = total_size.QuadPart - free_size.QuadPart;
     int used_percent = (int)((double)used_size.QuadPart / (double)total_size.QuadPart * 100);
     QString round_used = QString::number((double) used_size.QuadPart / 1073741824, 'f', 2);
-    ui->diskInfo->setStyleSheet("QFrame#diskInfo {border: 1px solid black;}");
     setLabelIcon(ui->label_13, "/Images/cpu.png"); setLabelIcon(ui->label_20, "/Images/gpu.png"); setLabelIcon(ui->label_14, "/Images/ram.png");
     QIcon binIcon(QCoreApplication::applicationDirPath() + "/Images/bin.png"); ui->clearTrashButton->setIcon(binIcon.pixmap(ui->clearTrashButton->size()));
     connect(ui->clearTrashButton, &QPushButton::clicked, this, [this, binIcon]() {
@@ -33,9 +32,6 @@ void MyOS::diskSpace() {
         QIcon successIcon(QCoreApplication::applicationDirPath() + "/Images/success.png"); ui->clearTrashButton->setIcon(successIcon.pixmap(ui->clearTrashButton->size()));
         QTimer::singleShot(3000, this, [this, binIcon]() {ui->clearTrashButton->setIcon(binIcon.pixmap(ui->clearTrashButton->size()));});
     });
-    ui->storage_9->setText("<table><td width=\"50%\" align=\"left\">Performance</td><td width=\"50%\" align=\"right\">100%</td></table>");
-    ui->storage_10->setText("<table><td width=\"50%\" align=\"left\">Condition</td><td width=\"50%\" align=\"right\">100%</td></table>");
-    ui->storage_13->setText("<table><td width=\"50%\" align=\"left\">Data Written</td><td width=\"50%\" align=\"right\">X TB</td></table>");
 
     qint64 images_size = 0, downloads_size = 0, docs_size = 0;
     updateStorageInfo(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation), images_size, ui->storage_6, ui->lineEdit_2);
@@ -69,32 +65,24 @@ void MyOS::diskSpace() {
                 }
             }
         });
-    } connect(ui->menuStorage, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->show();ui->specs->hide();ui->tasks->hide();ui->settings->hide();});
+    } connect(ui->menuStorage, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->show(); ui->specs->hide(); ui->tasks->hide(); ui->tasks->move(0, 0); ui->settings->hide();});
 }
 void MyOS::specs() {
-    ui->specs->setStyleSheet("QFrame#specs { border: 1px solid black; }");
-    ui->label_11->setText("Specification of " + QSysInfo::machineHostName());
-    char name[49] = {0};
-    for (int i = 0; i < 3; i++) {
-        unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0, id = 0x80000002; __cpuid(id + i, eax, ebx, ecx, edx);
-        memcpy(&name[i * 16], &eax, sizeof(eax)); memcpy(&name[i * 16 + 4], &ebx, sizeof(ebx));
-        memcpy(&name[i * 16 + 8], &ecx, sizeof(ecx)); memcpy(&name[i * 16 + 12], &edx, sizeof(edx));
-    } std::string cpuName(name); QString cpuType = QString::fromStdString(cpuName);
-    cpuType.remove("(R)"); cpuType.remove("(TM)"); cpuType.remove(" CPU"); cpuType.replace("@", "-");
-    PSYSTEM_LOGICAL_PROCESSOR_INFORMATION buffer = NULL; DWORD returnedLength = 0;
-    GetLogicalProcessorInformation(buffer, &returnedLength);
-    buffer = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION)malloc(returnedLength);
-    if (GetLogicalProcessorInformation(buffer, &returnedLength)) { int numCores = 0;
-        for (DWORD i = 0; i < returnedLength / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION); i++) {if (buffer[i].Relationship == RelationProcessorCore) {numCores++;}}
-        int numThreads = QThread::idealThreadCount(); QString cpuInfo = QString("%1, %2 Cores, %3 Threads").arg(cpuType).arg(numCores).arg(numThreads);
-        ui->label_12->setText(cpuInfo);
-    }
+    connect(ui->menuSpecs, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide();ui->specs->show();ui->tasks->hide();ui->specs->move(0, 0);ui->settings->hide();});
+
+    QProcess process; process.start("cmd", QStringList() << "/C" << "wmic cpu get Name,NumberOfCores,NumberOfLogicalProcessors & wmic memorychip get Capacity,Speed"); process.waitForFinished();
+    QString output = process.readAllStandardOutput(), cpuType, gpuDescription; QStringList lines = output.split('\n');
     MEMORYSTATUSEX status; status.dwLength = sizeof(status); GlobalMemoryStatusEx(&status);
-    double installedRAMinGB = status.ullTotalPhys / (1024.0 * 1024.0 * 1024.0);
-    ui->label_21->setText(QString("Installed memory: %1 GB (%2 GB Useable)").arg(qRound(installedRAMinGB)).arg(QString::number(installedRAMinGB, 'f', 1)));
-    connect(ui->menuSpecs, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide();ui->specs->show();ui->tasks->hide();ui->specs->move(5, 5);ui->settings->hide();});
+    double installedRAMinGB = status.ullTotalPhys / (1024.0 * 1024.0 * 1024.0), numCores = 0, numThreads = 0, slotsUsed = 0, totalSlotSize = 0, speed = 0, count = 0;
+    foreach (QString line, lines) {
+        QStringList details = line.trimmed().split(QRegularExpression("\\s{2,}")); // Split by two or more spaces
+        if (details.size() == 3 && !details[0].contains("Name")) {cpuType = details[0]; numCores = details[1].toInt(); numThreads = details[2].toInt();}
+        details = line.trimmed().split(QRegularExpression("\\s+"));
+        if (details.size() == 2 && details[0].toLongLong() > 0) {slotsUsed++; totalSlotSize += details[0].toDouble() / (1024.0 * 1024.0 * 1024.0); speed = details[1].toInt();}
+    } cpuType.remove("(R)"); cpuType.remove("(TM)"); cpuType.remove(" CPU"); cpuType.replace("@", "-");
+    QString cpuInfo = QString("%1, %2 Cores, %3 Threads").arg(cpuType).arg(numCores).arg(numThreads); ui->label_12->setText(cpuInfo);
+    ui->label_21->setText(QString("Installed memory: %1 GB (%2 * %3 GB %4 MHz - %5 GB Useable)").arg(qRound(installedRAMinGB)).arg(slotsUsed).arg(totalSlotSize / slotsUsed).arg(speed).arg(QString::number(installedRAMinGB, 'f', 1)));
     IDXGIFactory4* pFactory = nullptr; IDXGIAdapter1* pAdapter = nullptr;
-    QString gpuDescription; int count = 0;
     HRESULT hr = CreateDXGIFactory1(IID_PPV_ARGS(&pFactory)); if (FAILED(hr)){}
     for (UINT i = 0; pFactory->EnumAdapters1(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; ++i) {
         DXGI_ADAPTER_DESC1 adapterDesc; hr = pAdapter->GetDesc1(&adapterDesc); if (FAILED(hr)) {continue;}
@@ -104,10 +92,15 @@ void MyOS::specs() {
         if (adapterDesc.DedicatedVideoMemory / (1024 * 1024) > 128) {
             if (adapterDesc.DedicatedVideoMemory / (1024 * 1024) % 1024 >= 500) {qCeil(adapterDesc.DedicatedVideoMemory / (1024.0 * 1024.0 * 1024.0));}
             gpuDescription.append(QString(" %1 GB").arg(adapterDesc.DedicatedVideoMemory / (1024.0 * 1024.0 * 1024.0), 0, 'f', adapterDesc.DedicatedVideoMemory / (1024 * 1024) % 1024 >= 512 ? 0 : 1));
-        }
-    } gpuDescription.remove("(R)"); ui->label_15->setText(gpuDescription);
-}
-void MyOS::graph() {
+        } QTimer *timer2 = new QTimer(this);
+        connect(timer2, &QTimer::timeout, this, [this, gpuDescription]() {
+            QProcess process;
+            process.start("nvidia-smi", QStringList() << "--query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total" << "--format=csv,noheader,nounits"); process.waitForFinished();
+            QString output = process.readAllStandardOutput(); QStringList values = output.split(',');
+            int gputemp = values[0].trimmed().toInt(), gpuusage = values[1].trimmed().toInt(), gpumemusage = values[2].trimmed().toInt(), gpumaxmem = values[3].trimmed().toInt();
+            ui->label_15->setText(QString("%1 (%2 °C, %3%, %4/%5 MB)").arg(gpuDescription).arg(gputemp).arg(gpuusage).arg(gpumemusage).arg(gpumaxmem));
+        }); timer2->start(1000);
+    } gpuDescription.remove("(R)");
     QLineSeries *series = new QLineSeries();
     QTimer *timer = new QTimer(); timer->start(1000);
     int i = 0; bool isRAMUsage = false; bool isCPULoad = true; bool isGPUUsage = false;
@@ -139,6 +132,7 @@ void MyOS::graph() {
     connect(gpuButton, &QPushButton::clicked, [series, &i, &isCPULoad, &isGPUUsage, &isRAMUsage]{i = 0; series->clear(); isRAMUsage = false; isCPULoad = false; isGPUUsage = true;});
     connect(ramButton, &QPushButton::clicked, [series, &i, &isRAMUsage, &isCPULoad, &isGPUUsage](bool) {i = 0; series->clear(); isRAMUsage = true; isCPULoad = false; isGPUUsage = false;});
 }
+
 void MyOS::newPath(const QString& newPath, QFileSystemModel* model) {
     QFileInfo fileInfo(newPath);
     if (fileInfo.exists() && fileInfo.isDir()) {model->setRootPath(newPath); ui->treeView->setRootIndex(model->index(newPath));}
@@ -216,14 +210,14 @@ void MyOS::fileExplorer() {
     });
 }
 void MyOS::taskManager() {
-    connect(ui->menuTask_Manager, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide(); ui->specs->hide(); ui->tasks->show(); ui->tasks->move(5, 5); ui->settings->hide();});
+    connect(ui->menuTask_Manager, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide(); ui->specs->hide(); ui->tasks->show(); ui->tasks->move(-1, -1); ui->settings->hide();});
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [this]() {
         DWORD processIds[1024], bytesReturned;
         if (EnumProcesses(processIds, sizeof(processIds), &bytesReturned)) {
-            int numProcesses = bytesReturned / sizeof(DWORD), sections[] = {251, 80, 80, 80, 80};
+            int numProcesses = bytesReturned / sizeof(DWORD), sections[] = {252, 80, 80, 80, 80};
             for (int i = 0; i < 5; ++i) {ui->taskManager->horizontalHeader()->resizeSection(i, sections[i]);}
-            ui->taskManager->setStyleSheet("QTableWidget { border: 1px solid black; background-color: transparent;}");
+            ui->taskManager->setStyleSheet("QTableWidget {background-color: #F9F9F9;}");
             QStringList uniquePrograms; double sum = 0;
             ui->taskManager->clearContents(); ui->taskManager->setRowCount(0); ui->taskManager->insertRow(0);
             for (int i = 0; i < numProcesses; i++) {
@@ -244,13 +238,7 @@ void MyOS::taskManager() {
     }); timer->start(1000);
 }
 void MyOS::settings() {
-    ui->settings->setStyleSheet("QFrame#settings { border: 1px solid black; background-color: transparent;}");
-    connect(ui->menuSettings, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide();ui->specs->hide();ui->tasks->hide();ui->settings->show();ui->settings->move(5, 5);});
-    connect(ui->checkBox_5, &QCheckBox::stateChanged, this, [this](int state) {
-        int flags = windowFlags();
-        if (state == Qt::Checked) {flags |= Qt::WindowStaysOnTopHint;} else {flags &= ~Qt::WindowStaysOnTopHint;}
-        setWindowFlags(static_cast<Qt::WindowFlags>(flags)); show();
-    });
+    connect(ui->menuSettings, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide();ui->specs->hide();ui->tasks->hide();ui->settings->show();ui->settings->move(0, 0);});
     connect(ui->lineEdit, &QLineEdit::editingFinished, this, [this]() {QString newValue = ui->lineEdit->text(); ui->storage_2->setText(newValue);});
     connect(ui->lineEdit_3, &QLineEdit::editingFinished, this, [this]() {QString newValue = ui->lineEdit_3->text(); ui->storage_4->setText(newValue);});
     connect(ui->lineEdit_6, &QLineEdit::editingFinished, this, [this]() {QString newValue = ui->lineEdit_6->text(); ui->storage_3->setText(newValue);});
@@ -262,7 +250,6 @@ void MyOS::saveShortcuts() {
     QFile file(QCoreApplication::applicationDirPath() + "/shortcuts.txt");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {return;}
     QTextStream out(&file); out << ui->lineEdit_2->text() << "\n" << ui->lineEdit_4->text() << "\n" << ui->lineEdit_5->text() << "\n";
-    file.close();
 }
 void MyOS::loadShortcuts() {
     QFile file(QCoreApplication::applicationDirPath() + "/shortcuts.txt");
@@ -271,5 +258,4 @@ void MyOS::loadShortcuts() {
     if (!(line = in.readLine()).isEmpty()) {ui->lineEdit_2->setText(line);}
     if (!(line = in.readLine()).isEmpty()) {ui->lineEdit_4->setText(line);}
     if (!(line = in.readLine()).isEmpty()) {ui->lineEdit_5->setText(line);}
-    file.close();
 }
