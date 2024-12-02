@@ -113,9 +113,9 @@ void MyOS::graph() {
         cpuButton->setText(QString("CPU (Usage: X%, Load: %1%)").arg(QString::number(getCpuLoad, 'f', 1)));
         ramButton->setText(QString("RAM (%1% - %2 GB)").arg(usedRAMPercent, 0, 'f', 2).arg(usedRAMinGB, 0, 'f', 2));
         if (i < 61) {
-            if (isCPULoad) { series->append(i, getCpuLoad);}
+            if (isGPUUsage) {double randomValue = QRandomGenerator::global()->bounded(0, 101);series->append(i, randomValue);}
             else if (isRAMUsage) {series->append(i, usedRAMPercent);}
-            else {double randomValue = QRandomGenerator::global()->bounded(0, 101);series->append(i, randomValue);} ++i;
+            else { series->append(i, getCpuLoad);} ++i;
         } else {i = 0;series->clear();}
     });
 
