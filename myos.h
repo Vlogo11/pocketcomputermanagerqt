@@ -17,11 +17,11 @@ class MyOS : public QMainWindow {
     private slots:
         void diskSpace();
         void specs();
+        void graph();
         void fileExplorer();
         void settings();
         void taskManager();
         void newPath(const QString& newPath, QFileSystemModel* model);
-        void graph();
         void saveShortcuts();
         void loadShortcuts();
     private:

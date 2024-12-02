@@ -4,11 +4,9 @@
 MyOS::MyOS(QWidget *parent):QMainWindow(parent), ui(new Ui::MyOS) {
     ui->setupUi(this);
     diskSpace(); specs(); graph(); fileExplorer(); settings(); taskManager(); cpuLoad(); loadShortcuts();
-    setFixedSize(589, 393);
+    setFixedSize(589, 373);
     QIcon appIcon(QCoreApplication::applicationDirPath() + "/Images/icon.png"); setWindowIcon(appIcon);
     setWindowTitle("Pocket Computer Manager");
-    QTimer *timer = new QTimer(); connect(timer, &QTimer::timeout, this, &MyOS::cpuLoad); timer->start(1000); float getCpuLoad = cpuLoad();
-    ui->label_29->setText(QString("CPU usage and load in the last minute: (Usage: X%, Load: %1%)").arg(QString::number(getCpuLoad, 'f', 1)));
 }
 int main(int argc, char *argv[]) {QApplication a(argc, argv); MyOS w; w.show(); return a.exec();}
 MyOS::~MyOS(){delete ui;}
@@ -23,8 +21,6 @@ void MyOS::diskSpace() {
     ULARGE_INTEGER total_size, free_size, used_size;
     if (!GetDiskFreeSpaceEx(NULL, &free_size, &total_size, &used_size)) {}
     used_size.QuadPart = total_size.QuadPart - free_size.QuadPart;
-    int used_percent = (int)((double)used_size.QuadPart / (double)total_size.QuadPart * 100);
-    QString round_used = QString::number((double) used_size.QuadPart / 1073741824, 'f', 2);
     setLabelIcon(ui->label_13, "/Images/cpu.png"); setLabelIcon(ui->label_20, "/Images/gpu.png"); setLabelIcon(ui->label_14, "/Images/ram.png");
     QIcon binIcon(QCoreApplication::applicationDirPath() + "/Images/bin.png"); ui->clearTrashButton->setIcon(binIcon.pixmap(ui->clearTrashButton->size()));
     connect(ui->clearTrashButton, &QPushButton::clicked, this, [this, binIcon]() {
@@ -44,7 +40,7 @@ void MyOS::diskSpace() {
     QHBoxLayout* layout3 = new QHBoxLayout; layout3->addWidget(ui->storage_3); layout3->addWidget(ui->storage_7); layout3->setContentsMargins(5, 0, 5, 0);
     ui->storage_3->setStyleSheet("color: red;");ui->pushButton_4->setLayout(layout3);
 
-    ui->usedSize->setText(QString::number(used_percent) + "%"); ui->label->setText(round_used + " GB");
+    ui->usedSize->setText(QString::number((int)((double)used_size.QuadPart / (double)total_size.QuadPart * 100)) + "%"); ui->label->setText(QString::number((double) used_size.QuadPart / 1073741824, 'f', 2) + " GB");
     QPieSeries *series = new QPieSeries(); series->setHoleSize(0.75); series->setPieSize(1.0);
     QPieSlice *imagesSlice = series->append("Images", images_size); imagesSlice->setColor(QColor(0, 128, 0)); imagesSlice->setBorderColor(QColor(0, 128, 0));
     QPieSlice *docsSlice = series->append("Docs", docs_size); docsSlice->setColor(QColor(100, 149, 237)); docsSlice->setBorderColor(QColor(100, 149, 237));
@@ -65,11 +61,11 @@ void MyOS::diskSpace() {
                 }
             }
         });
-    } connect(ui->menuStorage, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->show(); ui->specs->hide(); ui->tasks->hide(); ui->tasks->move(0, 0); ui->settings->hide();});
+    }
+    connect(ui->menuStorage, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->show();ui->specs->hide();ui->tasks->hide();ui->settings->hide();});
 }
 void MyOS::specs() {
-    connect(ui->menuSpecs, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide();ui->specs->show();ui->tasks->hide();ui->specs->move(0, 0);ui->settings->hide();});
-
+    ui->label_11->setText("Specification of " + QSysInfo::machineHostName());
     QProcess process; process.start("cmd", QStringList() << "/C" << "wmic cpu get Name,NumberOfCores,NumberOfLogicalProcessors & wmic memorychip get Capacity,Speed"); process.waitForFinished();
     QString output = process.readAllStandardOutput(), cpuType, gpuDescription; QStringList lines = output.split('\n');
     MEMORYSTATUSEX status; status.dwLength = sizeof(status); GlobalMemoryStatusEx(&status);
@@ -82,6 +78,7 @@ void MyOS::specs() {
     } cpuType.remove("(R)"); cpuType.remove("(TM)"); cpuType.remove(" CPU"); cpuType.replace("@", "-");
     QString cpuInfo = QString("%1, %2 Cores, %3 Threads").arg(cpuType).arg(numCores).arg(numThreads); ui->label_12->setText(cpuInfo);
     ui->label_21->setText(QString("Installed memory: %1 GB (%2 * %3 GB %4 MHz - %5 GB Useable)").arg(qRound(installedRAMinGB)).arg(slotsUsed).arg(totalSlotSize / slotsUsed).arg(speed).arg(QString::number(installedRAMinGB, 'f', 1)));
+    connect(ui->menuSpecs, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide();ui->specs->show();ui->tasks->hide();ui->specs->move(0, 0);ui->settings->hide();});
     IDXGIFactory4* pFactory = nullptr; IDXGIAdapter1* pAdapter = nullptr;
     HRESULT hr = CreateDXGIFactory1(IID_PPV_ARGS(&pFactory)); if (FAILED(hr)){}
     for (UINT i = 0; pFactory->EnumAdapters1(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; ++i) {
@@ -92,34 +89,40 @@ void MyOS::specs() {
         if (adapterDesc.DedicatedVideoMemory / (1024 * 1024) > 128) {
             if (adapterDesc.DedicatedVideoMemory / (1024 * 1024) % 1024 >= 500) {qCeil(adapterDesc.DedicatedVideoMemory / (1024.0 * 1024.0 * 1024.0));}
             gpuDescription.append(QString(" %1 GB").arg(adapterDesc.DedicatedVideoMemory / (1024.0 * 1024.0 * 1024.0), 0, 'f', adapterDesc.DedicatedVideoMemory / (1024 * 1024) % 1024 >= 512 ? 0 : 1));
-        } QTimer *timer2 = new QTimer(this);
-        connect(timer2, &QTimer::timeout, this, [this, gpuDescription]() {
-            QProcess process;
-            process.start("nvidia-smi", QStringList() << "--query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total" << "--format=csv,noheader,nounits"); process.waitForFinished();
-            QString output = process.readAllStandardOutput(); QStringList values = output.split(',');
-            int gputemp = values[0].trimmed().toInt(), gpuusage = values[1].trimmed().toInt(), gpumemusage = values[2].trimmed().toInt(), gpumaxmem = values[3].trimmed().toInt();
-            ui->label_15->setText(QString("%1 (%2 °C, %3%, %4/%5 MB)").arg(gpuDescription).arg(gputemp).arg(gpuusage).arg(gpumemusage).arg(gpumaxmem));
-        }); timer2->start(1000);
-    } gpuDescription.remove("(R)");
+        }
+    } gpuDescription.remove("(R)"); ui->label_15->setText(gpuDescription);
+    QTimer *timer2 = new QTimer(this);
+    connect(timer2, &QTimer::timeout, this, [&]() {
+        QProcess process; process.start("cmd.exe", QStringList() << "/c" << "cd C:\\Program Files\\NVIDIA Corporation\\NVSMI && nvidia-smi --query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits");
+        if (!process.waitForFinished()) {}
+        QByteArray output = process.readAllStandardOutput(); QList<QString> values = QString(output).trimmed().split(',');
+        QString temperature = values[0], utilization = values[1], usedVRAM = QString::number(values[2].toFloat() / 1024, 'f', 2), maxVRAM = QString::number(values[3].toFloat() / 1024, 'f', 2);
+        ui->label_15->setText(QString("%1 °C, %4%, %2/%3 GB").arg(temperature, usedVRAM, maxVRAM, utilization));
+    }); timer2->start(1000);
 }
 void MyOS::graph() {
     QLineSeries *series = new QLineSeries();
     QTimer *timer = new QTimer(); timer->start(1000);
     int i = 0; bool isRAMUsage = false; bool isCPULoad = true; bool isGPUUsage = false;
-    connect(timer, &QTimer::timeout, this, [this, series, &i, &isRAMUsage, &isCPULoad, &isGPUUsage]() {
-        if (i < 61) { if (isCPULoad == true) {
-                float getCpuLoad = cpuLoad(); isRAMUsage = false; isGPUUsage= false; series->append(i, getCpuLoad);
-                ui->label_29->setText(QString("CPU usage and load in the last minute: (Usage: X%, Load: %1%)").arg(QString::number(getCpuLoad, 'f', 1)));
-            } else if (isRAMUsage == true) {
-                isCPULoad = false; isGPUUsage= false;
-                MEMORYSTATUSEX status; status.dwLength = sizeof(status); GlobalMemoryStatusEx(&status);
-                unsigned long long totalRAM = status.ullTotalPhys; unsigned long long usedRAM = totalRAM - status.ullAvailPhys;
-                double usedRAMPercent = (static_cast<double>(usedRAM) / totalRAM) * 100.0; double usedRAMinGB = usedRAM / (1024.0 * 1024.0 * 1024.0);
-                ui->label_29->setText(QString("RAM usage in the last minute (Current: %1% - %2 GB)").arg(usedRAMPercent, 0, 'f', 2).arg(usedRAMinGB, 0, 'f', 2));
-                series->append(i, usedRAMPercent);
-            } else if (isGPUUsage == true) {isCPULoad = false; isCPULoad= false; double randomValue = QRandomGenerator::global()->bounded(0, 101);series->append(i, randomValue); ui->label_29->setText(QString("GPU usage in the last minute"));} ++i;
-        } else {i = 0; series->clear();}
+    QPushButton *cpuButton = new QPushButton("CPU"); QPushButton *gpuButton = new QPushButton("GPU"); QPushButton *ramButton = new QPushButton("RAM");
+    connect(timer, &QTimer::timeout, this, [this, cpuButton, ramButton, series, &i, &isRAMUsage, &isCPULoad, &isGPUUsage]() {
+        float getCpuLoad = cpuLoad();
+        MEMORYSTATUSEX status; status.dwLength = sizeof(status); GlobalMemoryStatusEx(&status);
+        unsigned long long totalRAM = status.ullTotalPhys, usedRAM = totalRAM - status.ullAvailPhys;
+        double usedRAMPercent = (static_cast<double>(usedRAM) / totalRAM) * 100.0, usedRAMinGB = usedRAM / (1024.0 * 1024.0 * 1024.0);
+        cpuButton->setText(QString("CPU (Usage: X%, Load: %1%)").arg(QString::number(getCpuLoad, 'f', 1)));
+        ramButton->setText(QString("RAM (%1% - %2 GB)").arg(usedRAMPercent, 0, 'f', 2).arg(usedRAMinGB, 0, 'f', 2));
+        if (i < 61) {
+            if (isCPULoad) { series->append(i, getCpuLoad);}
+            else if (isRAMUsage) {series->append(i, usedRAMPercent);}
+            else {double randomValue = QRandomGenerator::global()->bounded(0, 101);series->append(i, randomValue);} ++i;
+        } else {i = 0;series->clear();}
     });
+
+    connect(cpuButton, &QPushButton::clicked, [series, &i, &isCPULoad, &isRAMUsage, &isGPUUsage]{i = 0; series->clear(); isRAMUsage = false; isCPULoad = true; isGPUUsage = false;});
+    connect(gpuButton, &QPushButton::clicked, [series, &i, &isCPULoad, &isGPUUsage, &isRAMUsage]{i = 0; series->clear(); isRAMUsage = false; isCPULoad = false; isGPUUsage = true;});
+    connect(ramButton, &QPushButton::clicked, [series, &i, &isRAMUsage, &isCPULoad, &isGPUUsage](bool) {i = 0; series->clear(); isRAMUsage = true; isCPULoad = false; isGPUUsage = false;});
+
     QChart *chart = new QChart(); chart->addSeries(series); chart->createDefaultAxes();
     chart->axes(Qt::Horizontal).at(0)->setRange(0, 60); chart->axes(Qt::Vertical).at(0)->setRange(0, 100);
     chart->axes(Qt::Horizontal).at(0)->setLabelsVisible(false); chart->axes(Qt::Vertical).at(0)->setLabelsVisible(false);
@@ -127,14 +130,9 @@ void MyOS::graph() {
     QChartView *chartView = new QChartView(chart); chartView->setRenderHint(QPainter::Antialiasing);
     QVBoxLayout *layout = new QVBoxLayout(ui->usage); layout->setContentsMargins(4, 0, 0, 0); layout->setSpacing(5);
     QHBoxLayout *buttonsLayout = new QHBoxLayout();
-    QPushButton *cpuButton = new QPushButton("CPU"); QPushButton *gpuButton = new QPushButton("GPU"); QPushButton *ramButton = new QPushButton("RAM");
     buttonsLayout->setContentsMargins(0, 7, 5, 0); buttonsLayout->addWidget(cpuButton); buttonsLayout->addWidget(gpuButton); buttonsLayout->addWidget(ramButton);
     layout->addLayout(buttonsLayout); layout->addWidget(chartView);
-    connect(cpuButton, &QPushButton::clicked, [series, &i, &isCPULoad, &isRAMUsage, &isGPUUsage]{i = 0; series->clear(); isRAMUsage = false; isCPULoad = true; isGPUUsage = false;});
-    connect(gpuButton, &QPushButton::clicked, [series, &i, &isCPULoad, &isGPUUsage, &isRAMUsage]{i = 0; series->clear(); isRAMUsage = false; isCPULoad = false; isGPUUsage = true;});
-    connect(ramButton, &QPushButton::clicked, [series, &i, &isRAMUsage, &isCPULoad, &isGPUUsage](bool) {i = 0; series->clear(); isRAMUsage = true; isCPULoad = false; isGPUUsage = false;});
 }
-
 void MyOS::newPath(const QString& newPath, QFileSystemModel* model) {
     QFileInfo fileInfo(newPath);
     if (fileInfo.exists() && fileInfo.isDir()) {model->setRootPath(newPath); ui->treeView->setRootIndex(model->index(newPath));}
@@ -212,14 +210,13 @@ void MyOS::fileExplorer() {
     });
 }
 void MyOS::taskManager() {
-    connect(ui->menuTask_Manager, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide(); ui->specs->hide(); ui->tasks->show(); ui->tasks->move(-1, -1); ui->settings->hide();});
+    connect(ui->menuTask_Manager, &QMenu::aboutToShow, this, [this]() {ui->diskInfo->hide(); ui->specs->hide(); ui->tasks->show(); ui->tasks->move(0, 0); ui->settings->hide();});
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [this]() {
         DWORD processIds[1024], bytesReturned;
         if (EnumProcesses(processIds, sizeof(processIds), &bytesReturned)) {
-            int numProcesses = bytesReturned / sizeof(DWORD), sections[] = {252, 80, 80, 80, 80};
+            int numProcesses = bytesReturned / sizeof(DWORD), sections[] = {251, 80, 80, 80, 80};
             for (int i = 0; i < 5; ++i) {ui->taskManager->horizontalHeader()->resizeSection(i, sections[i]);}
-            ui->taskManager->setStyleSheet("QTableWidget {background-color: #F9F9F9;}");
             QStringList uniquePrograms; double sum = 0;
             ui->taskManager->clearContents(); ui->taskManager->setRowCount(0); ui->taskManager->insertRow(0);
             for (int i = 0; i < numProcesses; i++) {

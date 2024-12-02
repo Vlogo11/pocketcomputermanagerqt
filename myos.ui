@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1190</width>
-    <height>810</height>
+    <width>1250</width>
+    <height>840</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
       <x>0</x>
       <y>0</y>
       <width>590</width>
-      <height>372</height>
+      <height>352</height>
      </rect>
     </property>
     <property name="font">
@@ -212,7 +212,7 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>346</y>
+       <y>326</y>
        <width>151</width>
        <height>20</height>
       </rect>
@@ -227,7 +227,7 @@
        <x>160</x>
        <y>1</y>
        <width>429</width>
-       <height>370</height>
+       <height>350</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -254,8 +254,8 @@
        <rect>
         <x>2</x>
         <y>25</y>
-        <width>421</width>
-        <height>339</height>
+        <width>422</width>
+        <height>320</height>
        </rect>
       </property>
       <property name="font">
@@ -358,10 +358,10 @@
    <widget class="QFrame" name="specs">
     <property name="geometry">
      <rect>
-      <x>-1</x>
-      <y>376</y>
+      <x>5</x>
+      <y>400</y>
       <width>590</width>
-      <height>372</height>
+      <height>352</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -388,7 +388,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Specifications</string>
+      <string>Machine's Name</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_13">
@@ -478,9 +478,9 @@
      <property name="geometry">
       <rect>
        <x>6</x>
-       <y>104</y>
+       <y>86</y>
        <width>578</width>
-       <height>261</height>
+       <height>259</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -495,7 +495,7 @@
         <x>-5</x>
         <y>-6</y>
         <width>589</width>
-        <height>272</height>
+        <height>270</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -506,32 +506,14 @@
       </property>
      </widget>
     </widget>
-    <widget class="QLabel" name="label_29">
-     <property name="geometry">
-      <rect>
-       <x>6</x>
-       <y>84</y>
-       <width>550</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>CPU usage in the past minute</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QFrame" name="settings">
     <property name="geometry">
      <rect>
-      <x>598</x>
-      <y>373</y>
+      <x>640</x>
+      <y>400</y>
       <width>590</width>
-      <height>372</height>
+      <height>352</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -599,7 +581,7 @@
       <rect>
        <x>171</x>
        <y>21</y>
-       <width>413</width>
+       <width>414</width>
        <height>20</height>
       </rect>
      </property>
@@ -634,7 +616,7 @@
       <rect>
        <x>171</x>
        <y>45</y>
-       <width>413</width>
+       <width>414</width>
        <height>20</height>
       </rect>
      </property>
@@ -650,7 +632,7 @@
       <rect>
        <x>171</x>
        <y>69</y>
-       <width>413</width>
+       <width>414</width>
        <height>20</height>
       </rect>
      </property>
@@ -681,10 +663,10 @@
    <widget class="QFrame" name="tasks">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>-5</y>
-      <width>591</width>
-      <height>373</height>
+      <x>640</x>
+      <y>5</y>
+      <width>590</width>
+      <height>352</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -702,7 +684,7 @@
        <x>0</x>
        <y>0</y>
        <width>590</width>
-       <height>373</height>
+       <height>352</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -753,8 +735,8 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>56</x>
-      <y>750</y>
+      <x>150</x>
+      <y>780</y>
       <width>84</width>
       <height>20</height>
      </rect>
@@ -769,8 +751,8 @@
    <widget class="QLabel" name="storage_7">
     <property name="geometry">
      <rect>
-      <x>56</x>
-      <y>767</y>
+      <x>150</x>
+      <y>797</y>
       <width>84</width>
       <height>20</height>
      </rect>
@@ -785,8 +767,8 @@
    <widget class="QLabel" name="storage_3">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>767</y>
+      <x>104</x>
+      <y>797</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -801,8 +783,8 @@
    <widget class="QLabel" name="storage_4">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>750</y>
+      <x>104</x>
+      <y>780</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -817,8 +799,8 @@
    <widget class="QLabel" name="storage_6">
     <property name="geometry">
      <rect>
-      <x>246</x>
-      <y>760</y>
+      <x>340</x>
+      <y>790</y>
       <width>84</width>
       <height>20</height>
      </rect>
@@ -833,8 +815,8 @@
    <widget class="QLabel" name="storage_2">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>760</y>
+      <x>294</x>
+      <y>790</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -852,7 +834,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1190</width>
+     <width>1250</width>
      <height>21</height>
     </rect>
    </property>
