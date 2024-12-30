@@ -94,8 +94,9 @@ void MyOS::specs() {
     QTimer *timer2 = new QTimer(this);
     connect(timer2, &QTimer::timeout, this, [&]() {
         QProcess process; process.start("cmd.exe", QStringList() << "/c" << "cd C:\\Program Files\\NVIDIA Corporation\\NVSMI && nvidia-smi --query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits");
-        if (!process.waitForFinished()) {}
+        if (!process.waitForFinished() || process.exitStatus() != QProcess::NormalExit) { return;}
         QByteArray output = process.readAllStandardOutput(); QList<QString> values = QString(output).trimmed().split(',');
+        if (values.size() < 4) {return;}
         QString temperature = values[0], utilization = values[1], usedVRAM = QString::number(values[2].toFloat() / 1024, 'f', 2), maxVRAM = QString::number(values[3].toFloat() / 1024, 'f', 2);
         ui->label_15->setText(QString("%1 °C, %4%, %2/%3 GB").arg(temperature, usedVRAM, maxVRAM, utilization));
     }); timer2->start(1000);

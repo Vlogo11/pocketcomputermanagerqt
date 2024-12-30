@@ -1,4 +1,3 @@
-#include <cpuid.h>
 #include <dxgi1_4.h>
 #include <QtCharts>
 #include <psapi.h>
